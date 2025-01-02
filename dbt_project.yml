@@ -31,14 +31,20 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   dbt_testing:
-    # Config indicated by + and applies to all files under models/example/
+    # Configurations for models under the 'Staging' folder
     Staging:
       +materialized: view
-      snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
+      +schema: staging  # Specify schema for staging models
+      +snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
+
+    # Configurations for models under the 'Transformation' folder
     Transformation:
       +materialized: table
-      snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
+      +schema: transformed  # Specify schema for transformation models
+      +snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
+
+    # Configurations for models under the 'Reporting' folder
     Reporting:
       +materialized: table
-      snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
-
+      +schema: reporting  # Specify schema for reporting models
+      +snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE

@@ -4,8 +4,8 @@ SELECT
     results.RACE_ID,
     results.DRIVER_ID,
     results.CONSTRUCTOR_ID,
-    results.NUMBER,
-    results.GRID,
+    results.NUMBER AS DRIVER_NUMBER,
+    results.GRID AS STARTING_GRID,
     results.POSITIONTEXT AS POSITION_TEXT,
     results.POSITION_ORDER,
     results.POINTS,
@@ -16,7 +16,7 @@ SELECT
     results.RANK AS FASTEST_LAP_RANK,
     results.FASTESTLAPTIME_SECONDS AS FASTEST_LAP_TIME_SECONDS,
     results.FASTEST_LAP_SPEED,
-
+ 
     -- Races Table Fields
     races.YEAR AS RACE_YEAR,
     races.ROUND AS RACE_ROUND,
