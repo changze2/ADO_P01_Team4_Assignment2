@@ -1,0 +1,35 @@
+version: 2
+
+sources:
+  - name: ASTON_MARTIN_DATA
+    database: ADO_P01_GROUP4_DATABASE
+    schema: ASTON_MARTIN_DATA
+    tables:
+      - name: DRIVERS_TESTING_API
+        description: "Api Tables for Drivers"
+        columns:
+          - name: MEETING_KEY
+            description: "Composite Key for Drivers table"
+          - name: SESSION_KEY
+            description: "Composite Key for Drivers table"
+      - name: PIT_TESTING_API
+        description: "Api Tables for PIT"
+        columns:
+          - name: MEETING_KEY
+            description: "Composite Key for PIT table"
+          - name: SESSION_KEY
+            description: "Composite Key for PIT table"
+      - name: SESSIONS_TESTING_API
+        description: "Api Tables for Sessions"
+        columns:
+          - name: MEETING_KEY
+            description: "Composite Key for Sessions table"
+          - name: SESSION_KEY
+            description: "Composite Key for Sessions table"
+      - name: WEATHER_TESTING_API
+        description: "Api Tables for Weather"
+        columns:
+          - name: MEETING_KEY
+            description: "Composite Key for Weather table"
+          - name: SESSION_KEY
+            description: "Composite Key for Weather table"
