@@ -13,6 +13,10 @@ SELECT
     Q2,
     Q3,
     CASE 
+        WHEN Q1 != '\\N' AND Q1 IS NOT NULL THEN 1
+        ELSE 0
+    END AS QUALIFIED_Q1,
+    CASE 
         WHEN Q2 != '\\N' AND Q2 IS NOT NULL THEN 1
         ELSE 0
     END AS QUALIFIED_Q2,

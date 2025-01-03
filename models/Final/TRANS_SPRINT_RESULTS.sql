@@ -1,13 +1,13 @@
--- Remove positions
+-- Remove positions 
 -- Map short form values in positionText to full form 
 -- Merge status to sprint_results
 -- Convert fastest lap time to seconds 
 
 SELECT
-    sr.SPRINT_RESULT_ID,
-    sr.RACE_ID,
-    sr.DRIVER_ID,
-    sr.CONSTRUCTOR_ID,
+    sr.RESULTID AS SPRINT_RESULT_ID,
+    sr.RACEID AS RACE_ID,
+    sr.DRIVERID AS DRIVER_ID,
+    sr.CONSTRUCTORID AS CONSTRUCTOR_ID,
     sr.NUMBER,
     sr.GRID,
     -- Replace positionText values
@@ -22,10 +22,10 @@ SELECT
     sr.POSITIONORDER,
     sr.POINTS,
     sr.LAPS,
-    sr.TIME,
+    sr.TIME AS TIME_INCREMENT,
     sr.MILLISECONDS,
     sr.FASTESTLAP,
-    sr.FASTESTLAPTIME,
+
     -- Convert MM:SS.SSS to seconds
     CASE
         WHEN sr.FASTESTLAPTIME IS NULL THEN NULL  -- Handle NULL values
@@ -35,8 +35,8 @@ SELECT
             CAST(SPLIT_PART(sr.FASTESTLAPTIME, ':', 2) AS FLOAT)         -- Extract seconds
     END AS FASTESTLAPTIME_SECONDS,
 
-    sr.STATUS_ID,
+    sr.STATUSID AS STATUS_ID,
     s.STATUS
 FROM {{ ref('STG_SPRINT_RESULTS') }} sr
 LEFT JOIN {{ ref('STG_STATUS') }} s
-    ON sr.STATUS_ID = s.STATUS_ID;
+    ON sr.STATUSID = s.STATUSID
