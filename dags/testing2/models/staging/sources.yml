@@ -1,0 +1,26 @@
+version: 2
+
+sources:
+  - name: aston_martin_data
+    schema: ASTON_MARTIN_DATA
+    tables:
+      - name: CIRCUITS2
+        description: "Table containing circuits data"
+        columns:
+          - name: circuitId
+            description: "Primary Key for Circuits"
+          - name: name
+            description: "Name of the Circuit"
+          - name: location
+            description: "Location of the Circuit"
+      - name: RACES
+        description: "Table containing races data"
+        columns:
+          - name: RACEID
+            description: "Primary Key for Races"
+      - name: RESULTS
+        description: "Table containing results data"
+        columns:
+          - name: RESULTID
+            description: "Primary Key for Results"
+
