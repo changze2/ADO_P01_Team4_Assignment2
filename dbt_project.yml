@@ -32,9 +32,9 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   ado_pipeline:
     # Config indicated by + and applies to all files under models/example/
-    staging:
+    Staging:
       +materialized: view
       snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
-    marts:
+    Final:
       +materialized: table
       snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
