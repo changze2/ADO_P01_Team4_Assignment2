@@ -9,7 +9,7 @@ SELECT
     COALESCE(SCOPE, 'NO SCOPE') AS SCOPE,  
     COALESCE(SECTOR, 0) AS SECTOR, 
     SESSION_KEY
-FROM {{ ref('STG_RACE_CONTROL_API') }}
+FROM {{ ref('STG_API_RACE_CONTROL') }}
 
 {% if is_incremental() %}
     {{ incremental_session_meeting_key() }}

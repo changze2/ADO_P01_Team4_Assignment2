@@ -4,7 +4,7 @@ SELECT
     MEETING_KEY,
     POSITION,
     SESSION_KEY
-FROM {{ ref('STG_POSITION_API') }}
+FROM {{ ref('STG_API_POSITION') }}
 
 {% if is_incremental() %}
     {{ incremental_session_meeting_key() }}

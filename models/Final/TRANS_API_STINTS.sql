@@ -6,7 +6,7 @@ SELECT
     MEETING_KEY,
     SESSION_KEY,
     STINT_NUMBER,
-FROM {{ ref('STG_STINTS_API') }}
+FROM {{ ref('STG_API_STINTS') }}
 
 {% if is_incremental() %}
     {{ incremental_session_meeting_key() }}

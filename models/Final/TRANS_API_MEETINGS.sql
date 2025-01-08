@@ -10,7 +10,7 @@ SELECT
     MEETING_NAME,
     MEETING_OFFICIAL_NAME,
     YEAR
-FROM {{ ref('STG_MEETINGS_API') }}
+FROM {{ ref('STG_API_MEETINGS') }}
 
 {% if is_incremental() %}
     {{ incremental_session_meeting_key() }}
