@@ -35,6 +35,11 @@ models:
     Staging:
       +materialized: view
       snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
-    Final:
+
+    Transformation:
+      +materialized: table
+      snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
+
+    Reporting:
       +materialized: table
       snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE

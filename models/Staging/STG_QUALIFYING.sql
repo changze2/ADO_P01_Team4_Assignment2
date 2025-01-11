@@ -1,4 +1,5 @@
 SELECT
+<<<<<<< HEAD
     QUALIFYID,
     RACEID ,
     DRIVERID,
@@ -8,4 +9,7 @@ SELECT
     CASE WHEN Q1 = '\\N' THEN NULL ELSE Q1 END AS Q1,
     CASE WHEN Q2 = '\\N' THEN NULL ELSE Q2 END AS Q2,
     CASE WHEN Q3 = '\\N' THEN NULL ELSE Q3 END AS Q3,
+=======
+* 
+>>>>>>> origin/xiaohong2
 FROM {{ source('ASTON_MARTIN_DATA', 'QUALIFYING') }}
