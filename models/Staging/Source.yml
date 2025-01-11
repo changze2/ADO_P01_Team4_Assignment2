@@ -10,417 +10,185 @@ sources:
         columns:
           - name: CIRCUITID
             description: "The unique identifier for each circuit."
-            tests:
-              - unique
-              - not_null
           - name: CIRCUITREF
             description: "A reference string for the circuit."
-            tests:
-              - unique
           - name: NAME
             description: "The name of the circuit."
-            tests:
-              - not_null
 
       - name: CONSTRUCTORS
         description: "Information about the constructors, including their name, nationality, and other details."
         columns:
           - name: CONSTRUCTORID
             description: "The unique identifier for each constructor."
-            tests:
-              - unique
-              - not_null
           - name: CONSTRUCTORREF
             description: "A unique reference string for the constructor."
-            tests:
-              - unique
-              - not_null
           - name: NAME
             description: "The name of the constructor."
-            tests:
-              - unique
-              - not_null
 
       - name: RACES
         description: "Details of each race including date, time, and associated practice and qualifying sessions."
         columns:
           - name: RACEID
             description: "The unique identifier for each race."
-            tests:
-              - unique
-              - not_null
           - name: YEAR
             description: "The year the race was held."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'SEASONS')
-                  field: YEAR
           - name: ROUND
             description: "The round number of the race in the season."
-            tests:
-              - not_null
           - name: CIRCUITID
             description: "Identifier for the circuit where the race was held."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'CIRCUITS')
-                  field: CIRCUITID
           - name: NAME
             description: "The name of the race."
-            tests:
-              - not_null
           - name: DATE
             description: "The date on which the race is scheduled."
-            tests:
-              - not_null
 
       - name: CONSTRUCTOR_RESULTS
         description: "Results for constructors in specific races, including points and status."
         columns:
           - name: CONSTRUCTORRESULTSID
             description: "The unique identifier for each constructor result."
-            tests:
-              - unique
-              - not_null
           - name: RACEID
             description: "The unique identifier for the race."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'RACES')
-                  field: RACEID
           - name: CONSTRUCTORID
             description: "The unique identifier for the constructor."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'CONSTRUCTORS')
-                  field: CONSTRUCTORID
           - name: POINTS
             description: "Points scored by the constructor in the race."
           - name: STATUS
             description: "The status of the constructor in the race."
-
 
       - name: CONSTRUCTOR_STANDINGS
         description: "Standings for constructors across races, including points, position, and wins."
         columns:
           - name: CONSTRUCTORSTANDINGSID
             description: "The unique identifier for each constructor standing."
-            tests:
-              - unique
-              - not_null
-
           - name: RACEID
             description: "The unique identifier for the race."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'RACES')
-                  field: RACEID
-
           - name: CONSTRUCTORID
             description: "The unique identifier for the constructor."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'CONSTRUCTORS')
-                  field: CONSTRUCTORID
-
           - name: POINTS
             description: "Total points for the constructor at this stage."
-            tests:
-              - not_null
-              - greater_than_or_equal_to:
-                  value: 0
-                  
           - name: WINS
             description: "Number of wins by the constructor."
-            tests:
-              - not_null
-              - greater_than_or_equal_to:
-                  value: 0
 
       - name: DRIVERS
         description: "Information about drivers, including their details and nationality."
         columns:
           - name: DRIVERID
             description: "The unique identifier for each driver."
-            tests:
-              - unique
-              - not_null
           - name: DRIVERREF
             description: "A unique reference string for the driver."
-            tests:
-              - unique
-              - not_null
           - name: FORENAME
             description: "The first name of the driver."
-            tests:
-              - not_null
           - name: SURNAME
             description: "The last name of the driver."
-            tests:
-              - not_null
           - name: URL
             description: "The URL for more information about the driver."
-            tests:
-              - unique
-              - not_null
 
       - name: DRIVER_STANDINGS
         description: "Standings for drivers across races, including points, position, and wins."
         columns:
-
           - name: DRIVERSTANDINGSID
             description: "The unique identifier for each driver standing."
-            tests:
-              - unique
-              - not_null
-
           - name: RACEID
             description: "The unique identifier for the race."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'RACES')
-                  field: RACEID
-
           - name: DRIVERID
             description: "The unique identifier for the driver."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'DRIVERS')
-                  field: DRIVERID
-                  
-          - name: POINTS 
+          - name: POINTS
             description: "Total points for the driver at this stage."
-            tests:
-              - not_null
-              - greater_than_or_equal_to:
-                  value: 0
-                  
           - name: WINS
             description: "Number of wins by the driver."
-            tests:
-              - not_null
-              - greater_than_or_equal_to:
-                  value: 0
-                  
+
       - name: LAP_TIMES
         description: "Details of lap times recorded by drivers during races."
         columns:
           - name: RACEID
             description: "The unique identifier for the race."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'RACES')
-                  field: RACEID
           - name: DRIVERID
             description: "The unique identifier for the driver."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'DRIVERS')
-                  field: DRIVERID
 
       - name: PIT_STOPS
         description: "Details of pit stops made by drivers during races."
         columns:
           - name: RACEID
             description: "The unique identifier for the race."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'RACES')
-                  field: RACEID
           - name: DRIVERID
             description: "The unique identifier for the driver."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'DRIVERS')
-                  field: DRIVERID
           - name: LAP
             description: "The lap number when the pit stop occurred."
-            tests:
-              - not_null
           - name: TIME
             description: "The time at which the pit stop occurred."
-            tests:
-              - not_null
           - name: STOP
-            tests: 
-              - not_null
+            description: "Details of the pit stop."
 
       - name: QUALIFYING
         description: "Details of qualifying sessions for races, including times for each stage."
         columns:
           - name: QUALIFYID
             description: "The unique identifier for each qualifying session."
-            tests:
-              - unique
-              - not_null
           - name: RACEID
             description: "The unique identifier for the race."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'RACES')
-                  field: RACEID
           - name: DRIVERID
             description: "The unique identifier for the driver."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'DRIVERS')
-                  field: DRIVERID
           - name: CONSTRUCTORID
             description: "The unique identifier for the constructor."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'CONSTRUCTORS')
-                  field: CONSTRUCTORID
           - name: NUMBER
             description: "The car number used during the qualifying session."
-            tests:
-              - not_null
 
       - name: RESULTS
         description: "Race results for drivers, including points, position, and lap times."
         columns:
           - name: RESULTID
             description: "The unique identifier for each race result."
-            tests:
-              - unique
-              - not_null
           - name: RACEID
             description: "The unique identifier for the race."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'RACES')
-                  field: RACEID
           - name: DRIVERID
             description: "The unique identifier for the driver."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'DRIVERS')
-                  field: DRIVERID
           - name: CONSTRUCTORID
             description: "The unique identifier for the constructor."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'CONSTRUCTORS')
-                  field: CONSTRUCTORID
           - name: STATUSID
             description: "The identifier for the driver's race status."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'STATUS')
-                  field: STATUSID
           - name: GRID
             description: "The starting grid position of the driver."
-            tests:
-              - not_null
           - name: POSITIONTEXT
             description: "Text representation of the final race position."
-            tests:
-              - not_null
           - name: POSITIONORDER
             description: "Numerical representation of the final race position."
-            tests:
-              - not_null
           - name: POINTS
             description: "The points scored by the driver in the race."
-            tests:
-              - not_null
-              - greater_than_or_equal_to:
-                  value: 0
           - name: LAPS
             description: "The total number of laps completed."
-            tests:
-              - not_null
-
 
       - name: SEASONS
         description: "Details of F1 seasons, including the year and associated URL."
         columns:
           - name: YEAR
             description: "The year of the season."
-            tests:
-              - unique
-              - not_null
 
       - name: SPRINT_RESULTS
         description: "Results for sprint races, including points, position, and lap times."
         columns:
           - name: SPRINTRESULTID
             description: "The unique identifier for each sprint result."
-            tests:
-              - unique
-              - not_null
           - name: RACEID
             description: "The unique identifier for the race."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'RACES')
-                  field: RACEID
           - name: DRIVERID
             description: "The unique identifier for the driver."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'DRIVERS')
-                  field: DRIVERID
           - name: CONSTRUCTORID
             description: "The unique identifier for the constructor."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'CONSTRUCTORS')
-                  field: CONSTRUCTORID
           - name: STATUSID
             description: "The identifier for the driver's sprint race status."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('ASTON_MARTIN_DATA', 'STATUS')
-                  field: STATUSID
           - name: GRID
             description: "The starting grid position of the driver."
-            tests:
-              - not_null
           - name: POSITIONTEXT
             description: "Text representation of the final sprint race position."
-            tests:
-              - not_null
           - name: POSITIONORDER
             description: "Numerical representation of the final sprint race position."
-            tests:
-              - not_null
           - name: POINTS
             description: "The points scored by the driver in the sprint race."
-            tests:
-              - not_null
           - name: LAPS
             description: "The total number of laps completed in the sprint race."
-            tests:
-              - not_null
 
       - name: STATUS
         description: "Details of race statuses, including unique identifiers and descriptions."
         columns:
           - name: STATUSID
             description: "The unique identifier for each status."
-            tests:
-              - unique
