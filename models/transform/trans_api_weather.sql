@@ -2,9 +2,7 @@
 
 SELECT
     AIR_TEMPERATURE,
-    EXTRACT(YEAR FROM DATE) AS YEAR,
-    EXTRACT(MONTH FROM DATE) AS MONTH,
-    EXTRACT(DAY FROM DATE) AS DAY,
+    DATE,
     HUMIDITY,
     MEETING_KEY,
     SESSION_KEY,
@@ -16,7 +14,7 @@ SELECT
 -- Handling missing values: Fill missing AIR_TEMPERATURE with the average value
     COALESCE(AIR_TEMPERATURE, (
         SELECT AVG(AIR_TEMPERATURE) 
-        FROM {{ ref('stg_weather_api') }}
+        FROM {{ ref('stg_api_weather') }}
     )) AS AIR_TEMPERATURE_FILLED,
     
     -- Create derived features, e.g., Heat Index or Wind Chill
@@ -32,7 +30,7 @@ SELECT
         ELSE NULL
     END AS WIND_CHILL
     
-FROM {{ ref('stg_weather_api') }}
+FROM {{ ref('stg_api_weather') }}
 
 {% if is_incremental() %}
     {{ incremental_session_meeting_key() }}
