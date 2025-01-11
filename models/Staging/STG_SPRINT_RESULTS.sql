@@ -1,5 +1,8 @@
+-- Variable 'POSITION' was dropped 
+-- NULL values are handled by checking for '\\N' and replacing them with NULL.
+
 SELECT
-    RESULTID AS SPRINT_RESULTID,
+    RESULTID,
 	RACEID,
 	DRIVERID,
 	CONSTRUCTORID,
