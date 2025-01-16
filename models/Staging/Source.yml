@@ -424,3 +424,42 @@ sources:
             description: "The unique identifier for each status."
             tests:
               - unique
+
+
+
+
+
+# API data 
+
+    tables:
+      - name: DRIVERS_TESTING_API
+        description: "Api Tables for Drivers"
+        columns:
+          - name: MEETING_KEY
+            description: "Composite Key for Drivers table"
+          - name: SESSION_KEY
+            description: "Composite Key for Drivers table"
+
+      - name: PIT_TESTING_API
+        description: "Api Tables for PIT"
+        columns:
+          - name: MEETING_KEY
+            description: "Composite Key for PIT table"
+          - name: SESSION_KEY
+            description: "Composite Key for PIT table"
+
+      - name: SESSIONS_TESTING_API
+        description: "Api Tables for Sessions"
+        columns:
+          - name: MEETING_KEY
+            description: "Composite Key for Sessions table"
+          - name: SESSION_KEY
+            description: "Composite Key for Sessions table"
+            
+      - name: WEATHER_TESTING_API
+        description: "Api Tables for Weather"
+        columns:
+          - name: MEETING_KEY
+            description: "Composite Key for Weather table"
+          - name: SESSION_KEY
+            description: "Composite Key for Weather table"

@@ -48,3 +48,8 @@ models:
       +materialized: table
       +schema: reporting  # Specify schema for reporting models
       +snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
+
+    transform:
+      +materialized: incremental
+      snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
+   
