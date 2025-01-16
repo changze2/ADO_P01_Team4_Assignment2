@@ -34,7 +34,7 @@ jobs:
       - name: Create profiles.yml
         run: |
           mkdir -p ~/.dbt
-          echo "default:" > ~/.dbt/profiles.yml
+          echo "ado_pipeline:" > ~/.dbt/profiles.yml  # Use the profile name from dbt_project.yml
           echo "  target: prod" >> ~/.dbt/profiles.yml
           echo "  outputs:" >> ~/.dbt/profiles.yml
           echo "    prod:" >> ~/.dbt/profiles.yml
@@ -46,6 +46,7 @@ jobs:
           echo "      database: \"${{ secrets.SNOWFLAKE_DATABASE }}\"" >> ~/.dbt/profiles.yml
           echo "      warehouse: \"${{ secrets.SNOWFLAKE_WAREHOUSE }}\"" >> ~/.dbt/profiles.yml
           echo "      schema: \"${{ secrets.SNOWFLAKE_SCHEMA }}\"" >> ~/.dbt/profiles.yml
+
 
       # Step 5: Run dbt Commands
       - name: Run dbt Commands
