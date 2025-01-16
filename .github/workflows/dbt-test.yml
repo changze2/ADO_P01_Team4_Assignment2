@@ -1,0 +1,51 @@
+name: dbt Testing and Deployment
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on push to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger the workflow on pull requests to the main branch
+
+jobs:
+  validate-dbt:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      # Step 3: Install dbt and dependencies
+      - name: Install dbt and Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install dbt-core dbt-snowflake
+          dbt deps
+
+      # Step 4: Run dbt Commands
+      - name: Run dbt Commands
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USERNAME: ${{ secrets.SNOWFLAKE_USERNAME }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+        run: |
+          dbt debug
+          dbt run
+          dbt test
+
+      # Step 5: Notify on Success
+      - name: Notify on Success
+        if: success()
+        run: echo "DBT Model Testing executed successfully for branch ${{ github.ref_name }}"
