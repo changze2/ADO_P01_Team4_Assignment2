@@ -1,0 +1,161 @@
+models:
+  - name: TRANS_API_MEETINGS
+    columns:
+      - name: CIRCUIT_KEY
+        tests:
+          - unique
+          - not_null
+
+      - name: CIRCUIT_SHORT_NAME
+        tests:
+          - not_null
+
+      - name: COUNTRY_CODE
+        tests:
+          - not_null
+
+      - name: COUNTRY_KEY
+        tests:
+          - not_null
+
+      - name: COUNTRY_NAME
+        tests:
+          - not_null
+
+      - name: DATE_START
+        tests:
+          - not_null
+
+      - name: GMT_OFFSET
+        tests:
+          - not_null
+
+      - name: LOCATION
+        tests:
+          - not_null
+
+      - name: MEETING_KEY
+        tests:
+          - unique
+          - not_null
+
+      - name: MEETING_NAME
+        tests:
+          - not_null
+
+      - name: MEETING_OFFICIAL_NAME
+        tests:
+          - not_null
+
+      - name: YEAR
+        tests:
+          - not_null
+
+  - name: TRANS_API_POSITION
+    columns:
+      - name: DATE
+        tests:
+          - not_null
+
+      - name: MEETING_KEY
+        tests:
+          - not_null
+
+      - name: SESSION_KEY
+        tests:
+          - not_null
+
+      - name: DRIVER_NUMBER
+        tests:
+          - not_null
+
+      - name: POSITION
+        tests:
+          - not_null
+          - accepted_range:
+              min: 1
+
+  - name: TRANS_API_RACE_CONTROL
+    columns:
+      - name: LAP_NUMBER
+        tests:
+          - not_null
+
+      - name: MEETING_KEY
+        tests:
+          - not_null
+
+      - name: SESSION_KEY
+        tests:
+          - not_null
+
+      - name: CATEGORY
+        tests:
+          - not_null
+
+      - name: DATE
+        tests:
+          - not_null
+
+      - name: DRIVER_NUMBER
+        tests:
+          - not_null
+
+      - name: FLAG
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["GREEN", "YELLOW", "DOUBLE YELLOW", "CHEQUERED"]
+
+      - name: MESSAGE
+        tests:
+          - not_null
+
+      - name: SCOPE
+        tests:
+          - not_null
+
+      - name: SECTOR
+        tests:
+          - not_null
+
+  - name: TRANS_API_STINTS
+    columns:
+      - name: MEETING_KEY
+        tests:
+          - not_null
+
+      - name: SESSION_KEY
+        tests:
+          - not_null
+
+      - name: STINT_NUMBER
+        tests:
+          - unique
+          - not_null
+
+      - name: COMPOUND
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["SOFT", "MEDIUM", "HARD", "INTERMEDIATE", "WET"]
+
+      - name: DRIVER_NUMBER
+        tests:
+          - not_null
+
+      - name: LAP_END
+        tests:
+          - not_null
+          - accepted_range:
+              min: 1
+
+      - name: LAP_START
+        tests:
+          - not_null
+          - accepted_range:
+              min: 1
+
+      - name: TYRE_AGE_AT_START
+        tests:
+          - not_null
