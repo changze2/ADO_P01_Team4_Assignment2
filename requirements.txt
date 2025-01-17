@@ -1,15 +1,3 @@
-# Astro Runtime includes the following pre-installed providers packages: 
-# https://www.astronomer.io/docs/astro/runtime-image-architecture#provider-packages
+astro-sdk-python[amazon,databricks,duckdb,google,postgres,snowflake]==1.5.3
 
-astronomer-cosmos
-apache-airflow-providers-snowflake
-
-# MySQL Support for Apache Airflow
-apache-airflow-providers-mysql  # MySQL provider for Airflow
-
-# Additional dependencies
-requests  # For API calls
-snowflake-connector-python  # Snowflake Python connector
-mysql-connector-python  # MySQL Python connector
-
-apache-airflow-providers-apprise==2.0.0
+requests==2.31.0
