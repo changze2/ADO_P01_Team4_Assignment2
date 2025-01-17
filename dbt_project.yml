@@ -34,23 +34,27 @@ models:
     # Configurations for models under the 'Staging' folder
     Staging:
       +materialized: view
+      +enabled: true
       +schema: staging  # Specify schema for staging models
       +snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
 
     # Configurations for models under the 'Transformation' folder
     Transformation Historical:
       +materialized: table
+      +enabled: true
       +schema: transformed  # Specify schema for transformation models
       +snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
 
     # Configurations for models under the 'Reporting' folder
     Reporting:
       +materialized: table
+      +enabled: true
       +schema: reporting  # Specify schema for reporting models
       +snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
 
     Transformation_API:
       +materialized: incremental
+      +enabled: true
       +schema: transformed 
       snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
 
