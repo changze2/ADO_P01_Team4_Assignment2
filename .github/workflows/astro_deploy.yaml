@@ -13,26 +13,27 @@ jobs:
     outputs:
       DAGS_ONLY: ${{ steps.deployment-type.outputs.DAGS_ONLY }}
     steps:
-    - name: checkout repo
+    - name: Checkout repo
       uses: actions/checkout@v3
       with:
         fetch-depth: 2
 
     - name: Get Deployment Type
       id: deployment-type
-      run:
+      run: |
         files=$(git diff --name-only HEAD^..HEAD)
         dags_only=1
 
         for file in $files; do
-          if [[ $file != "dags/"* ]]; then
-            echo "$file is not a dag, triggering a full image build"
+          if [[ ! $file == dags/* ]]; then
+            echo "$file is not a DAG, triggering a full image build"
             dags_only=0
             break
           fi
         done
 
         echo "DAGS_ONLY=$dags_only" >> $GITHUB_OUTPUT
+
 
   dev-push:
     if: github.ref == 'refs/heads/dev'
