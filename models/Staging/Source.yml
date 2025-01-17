@@ -432,7 +432,7 @@ sources:
 # API data 
 
     tables:
-      - name: DRIVERS_TESTING_API
+      - name: DRIVERS_API
         description: "Api Tables for Drivers"
         columns:
           - name: MEETING_KEY
@@ -440,7 +440,7 @@ sources:
           - name: SESSION_KEY
             description: "Composite Key for Drivers table"
 
-      - name: PIT_TESTING_API
+      - name: PIT_API
         description: "Api Tables for PIT"
         columns:
           - name: MEETING_KEY
@@ -448,7 +448,7 @@ sources:
           - name: SESSION_KEY
             description: "Composite Key for PIT table"
 
-      - name: SESSIONS_TESTING_API
+      - name: SESSIONS_API
         description: "Api Tables for Sessions"
         columns:
           - name: MEETING_KEY
@@ -456,10 +456,96 @@ sources:
           - name: SESSION_KEY
             description: "Composite Key for Sessions table"
             
-      - name: WEATHER_TESTING_API
+      - name: WEATHER_API
         description: "Api Tables for Weather"
         columns:
           - name: MEETING_KEY
             description: "Composite Key for Weather table"
           - name: SESSION_KEY
             description: "Composite Key for Weather table"
+
+      - name: MEETINGS_API
+        description: "Details of racing events, including location, time, and circuit information."
+        columns:
+          - name: CIRCUIT_KEY
+            description: "Primary Key of the Meetings table. The unique identifier for the circuit where the event takes place."
+          - name: CIRCUIT_SHORT_NAME
+            description: "The short or common name of the circuit where the event takes place."
+          - name: COUNTRY_CODE
+            description: "A code that uniquely identifies the country."
+          - name: COUNTRY_KEY
+            description: "The unique identifier for the country where the event takes place."
+          - name: COUNTRY_NAME
+            description: "The full name of the country where the event takes place."
+          - name: DATE_START
+            description: "The UTC starting date and time, in ISO 8601 format."
+          - name: GMT_OFFSET
+            description: "The difference in hours and minutes between local time at the location of the event and Greenwich Mean Time (GMT)."
+          - name: LOCATION
+            description: "The city or geographical location where the event takes place."
+          - name: MEETING_KEY
+            description: "The unique identifier for the meeting. Use 'latest' to identify the latest or current meeting."
+          - name: MEETING_NAME
+            description: "The name of the meeting."
+          - name: MEETING_OFFICIAL_NAME
+            description: "The official name of the meeting."
+          - name: YEAR
+            description: "The year the event takes place."
+
+      - name: POSITION_API
+        description: "Details of driver positions in specific sessions, including meeting and session identifiers."
+        columns:
+          - name: DATE
+            description: "The Primary Key for Position table. The UTC date and time, in ISO 8601 format."
+          - name: MEETING_KEY
+            description: "The unique identifier for the meeting. Use 'latest' to identify the latest or current meeting."
+          - name: SESSION_KEY
+            description: "The unique identifier for the session. Use 'latest' to identify the latest or current session."
+          - name: DRIVER_NUMBER
+            description: "The unique number assigned to an F1 driver."
+          - name: POSITION
+            description: "Position of the driver (starts at 1)."
+
+      - name: RACE_CONTROL_API
+        description: "Details of race control events, including flags, categories, and session-specific information."
+        columns:
+          - name: LAP_NUMBER
+            description: "Composite Key for Race Control table. The sequential number of the lap within the session (starts at 1)."
+          - name: MEETING_KEY
+            description: "Composite Key for Race Control table. The unique identifier for the meeting. Use 'latest' to identify the latest or current meeting."
+          - name: SESSION_KEY
+            description: "Composite Key for Race Control table. The unique identifier for the session. Use 'latest' to identify the latest or current session."
+          - name: CATEGORY
+            description: "The category of the event (CarEvent, Drs, Flag, SafetyCar, etc.)."
+          - name: DATE
+            description: "The UTC date and time, in ISO 8601 format."
+          - name: DRIVER_NUMBER
+            description: "The unique number assigned to an F1 driver."
+          - name: FLAG
+            description: "Type of flag displayed (GREEN, YELLOW, DOUBLE YELLOW, CHEQUERED, etc.)."
+          - name: MESSAGE
+            description: "Description of the event or action."
+          - name: SCOPE
+            description: "The scope of the event (Track, Driver, Sector, etc.)."
+          - name: SECTOR
+            description: "Segment ('mini-sector') of the track where the event occurred (starts at 1)."
+
+      - name: STINTS_API
+        description: "Details of driver stints, including tyre usage, lap range, and session identifiers."
+        columns:
+          - name: MEETING_KEY
+            description: "Composite Key for Stints table. The unique identifier for the meeting. Use 'latest' to identify the latest or current meeting."
+          - name: SESSION_KEY
+            description: "Composite Key for Stints table. The unique identifier for the session. Use 'latest' to identify the latest or current session."
+          - name: STINT_NUMBER
+            description: "Composite Key for Stints table. The sequential number of the stint within the session (starts at 1)."
+          - name: COMPOUND
+            description: "The specific compound of tyre used during the stint (SOFT, MEDIUM, HARD, etc.)."
+          - name: DRIVER_NUMBER
+            description: "The unique number assigned to an F1 driver."
+          - name: LAP_END
+            description: "Number of the last completed lap in this stint."
+          - name: LAP_START
+            description: "Number of the initial lap in this stint (starts at 1)."
+          - name: TYRE_AGE_AT_START
+            description: "The age of the tyres at the start of the stint, in laps completed."

@@ -38,7 +38,7 @@ models:
       +snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
 
     # Configurations for models under the 'Transformation' folder
-    Transformation:
+    Transformation Historical:
       +materialized: table
       +schema: transformed  # Specify schema for transformation models
       +snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
@@ -49,7 +49,8 @@ models:
       +schema: reporting  # Specify schema for reporting models
       +snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
 
-    transform:
+    Transformation_API:
       +materialized: incremental
+      +schema: transformed 
       snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
-   
+
