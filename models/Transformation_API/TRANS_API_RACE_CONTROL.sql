@@ -12,5 +12,5 @@ SELECT
 FROM {{ ref('STG_API_RACE_CONTROL') }}
 
 {% if is_incremental() %}
-    {{ incremental_session_meeting_key() }}
+    {{ incremental_date_comparison() }}
 {% endif %}
