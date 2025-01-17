@@ -1,0 +1,69 @@
+models:
+  - name: trans_api_drivers
+    columns:
+      - name: meeting_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_api_drivers')
+              field: meeting_key
+              severity: warn
+      - name: session_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_api_drivers')
+              field: session_key
+              severity: warn
+  - name: trans_api_pit
+    columns:
+      - name: meeting_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_api_pit')
+              field: meeting_key
+              severity: warn
+      - name: session_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_api_pit')
+              field: session_key
+              severity: warn
+  - name: trans_api_sessions
+    columns:
+      - name: meeting_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_api_sessions')
+              field: meeting_key
+              severity: warn
+      - name: session_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_api_sessions')
+              field: session_key
+              severity: warn
+      - name: session_type
+        tests:
+          - accepted_values:
+              values: ['Practice', 'Qualifying', 'Race']
+  - name: trans_api_weather
+    columns:
+      - name: meeting_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_api_weather')
+              field: meeting_key
+              severity: warn
+      - name: session_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_api_weather')
+              field: session_key
+              severity: warn

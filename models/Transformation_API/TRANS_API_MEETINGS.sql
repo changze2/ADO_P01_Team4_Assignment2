@@ -13,5 +13,5 @@ SELECT
 FROM {{ ref('STG_API_MEETINGS') }}
 
 {% if is_incremental() %}
-    {{ incremental_session_meeting_key() }}
+    {{ incremental_meeting_key() }}
 {% endif %}

@@ -430,8 +430,6 @@ sources:
 
 
 # API data 
-
-    tables:
       - name: DRIVERS_API
         description: "Api Tables for Drivers"
         columns:
@@ -439,7 +437,6 @@ sources:
             description: "Composite Key for Drivers table"
           - name: SESSION_KEY
             description: "Composite Key for Drivers table"
-
       - name: PIT_API
         description: "Api Tables for PIT"
         columns:
@@ -447,7 +444,6 @@ sources:
             description: "Composite Key for PIT table"
           - name: SESSION_KEY
             description: "Composite Key for PIT table"
-
       - name: SESSIONS_API
         description: "Api Tables for Sessions"
         columns:
@@ -455,7 +451,6 @@ sources:
             description: "Composite Key for Sessions table"
           - name: SESSION_KEY
             description: "Composite Key for Sessions table"
-            
       - name: WEATHER_API
         description: "Api Tables for Weather"
         columns:
