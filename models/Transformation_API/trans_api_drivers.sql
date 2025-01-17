@@ -9,7 +9,7 @@ SELECT
     COALESCE(session_key, '') AS session_key,
     COALESCE(team_colour, '') AS team_colour,
     COALESCE(team_name, '') AS team_name
-FROM {{ ref('stg_api_drivers') }}
+FROM {{ ref('STG_API_DRIVERS') }}
 {% if is_incremental() %}
     {{ incremental_session_meeting_key() }}
 {% endif %}

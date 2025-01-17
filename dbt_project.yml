@@ -39,7 +39,7 @@ models:
       +snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
 
     # Configurations for models under the 'Transformation' folder
-    Transformation Historical:
+    Transformation_Historical:
       +materialized: table
       +enabled: true
       +schema: transformed  # Specify schema for transformation models

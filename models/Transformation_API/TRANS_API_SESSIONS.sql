@@ -11,7 +11,7 @@ SELECT
     session_name,
     session_type,
     year,
-FROM {{ ref('stg_api_sessions') }}
+FROM {{ ref('STG_API_SESSIONS') }}
 {% if is_incremental() %}
     {{ incremental_session_meeting_key() }}
 {% endif %}

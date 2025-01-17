@@ -1,69 +1,392 @@
 models:
-  - name: trans_api_drivers
+
+# API Tables
+# These tables store data related to API interactions, including drivers, meetings, sessions, and weather data.
+  - name: TRANS_API_DRIVERS
     columns:
       - name: meeting_key
         tests:
           - not_null
           - relationships:
-              to: ref('stg_api_drivers')
+              to: ref('TRANS_API_MEETINGS')
               field: meeting_key
               severity: warn
       - name: session_key
         tests:
           - not_null
           - relationships:
-              to: ref('stg_api_drivers')
+              to: ref('TRANS_API_SESSIONS')
               field: session_key
               severity: warn
-  - name: trans_api_pit
+
+  - name: TRANS_API_MEETINGS
     columns:
       - name: meeting_key
         tests:
           - not_null
           - relationships:
-              to: ref('stg_api_pit')
+              to: ref('STG_API_MEETINGS')
               field: meeting_key
               severity: warn
       - name: session_key
         tests:
           - not_null
           - relationships:
-              to: ref('stg_api_pit')
+              to: ref('TRANS_API_SESSIONS')
               field: session_key
               severity: warn
-  - name: trans_api_sessions
+
+  - name: TRANS_API_PIT
     columns:
       - name: meeting_key
         tests:
           - not_null
           - relationships:
-              to: ref('stg_api_sessions')
+              to: ref('TRANS_API_MEETINGS')
               field: meeting_key
               severity: warn
       - name: session_key
         tests:
           - not_null
           - relationships:
-              to: ref('stg_api_sessions')
+              to: ref('TRANS_API_SESSIONS')
+              field: session_key
+              severity: warn
+
+  - name: TRANS_API_SESSIONS
+    columns:
+      - name: meeting_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_API_MEETINGS')
+              field: meeting_key
+              severity: warn
+      - name: session_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_API_SESSIONS')
               field: session_key
               severity: warn
       - name: session_type
         tests:
           - accepted_values:
               values: ['Practice', 'Qualifying', 'Race']
-  - name: trans_api_weather
+
+  - name: TRANS_API_WEATHER
     columns:
       - name: meeting_key
         tests:
           - not_null
           - relationships:
-              to: ref('stg_api_weather')
+              to: ref('TRANS_API_MEETINGS')
               field: meeting_key
               severity: warn
       - name: session_key
         tests:
           - not_null
           - relationships:
-              to: ref('stg_api_weather')
+              to: ref('TRANS_API_SESSIONS')
               field: session_key
               severity: warn
+
+  - name: TRANS_API_POSITION
+    columns:
+      - name: driver_number
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_API_DRIVERS')
+              field: driver_number
+              severity: warn
+      - name: meeting_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_API_MEETINGS')
+              field: meeting_key
+              severity: warn
+      - name: session_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_API_SESSIONS')
+              field: session_key
+              severity: warn
+
+  - name: TRANS_API_RACE_CONTROL
+    columns:
+      - name: driver_number
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_API_DRIVERS')
+              field: driver_number
+              severity: warn
+      - name: meeting_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_API_MEETINGS')
+              field: meeting_key
+              severity: warn
+      - name: session_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_API_SESSIONS')
+              field: session_key
+              severity: warn
+
+  - name: TRANS_API_STINTS
+    columns:
+      - name: stint_number
+        tests:
+          - not_null
+          - relationships:
+              to: ref('STG_API_STINTS')
+              field: stint_number
+              severity: warn 
+              
+      - name: driver_number
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_API_DRIVERS')
+              field: driver_number
+              severity: warn
+      - name: meeting_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_API_MEETINGS')
+              field: meeting_key
+              severity: warn
+      - name: session_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_API_SESSIONS')
+              field: session_key
+              severity: warn
+
+# Historical Tables
+# These tables store historical data such as circuits, constructors, races, and results.
+  - name: TRANS_CIRCUITS
+    columns:
+      - name: CIRCUIT_ID
+        tests:
+          - unique
+          - not_null
+      - name: CIRCUIT_REF
+        tests:
+          - unique
+      - name: NAME
+        tests:
+          - not_null
+
+  - name: TRANS_CONSTRUCTORS
+    columns:
+      - name: CONSTRUCTOR_ID
+        tests:
+          - unique
+          - not_null
+      - name: CONSTRUCTOR_REF
+        tests:
+          - unique
+          - not_null
+      - name: NAME
+        tests:
+          - not_null
+
+  - name: TRANS_CONSTRUCTOR_RESULTS
+    columns:
+      - name: CONSTRUCTOR_RESULTS_ID
+        tests:
+          - unique
+          - not_null
+      - name: CONSTRUCTOR_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_CONSTRUCTORS')
+              field: CONSTRUCTOR_ID
+              severity: warn
+      - name: RACE_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_RACES')
+              field: RACE_ID
+              severity: warn
+
+  - name: TRANS_CONSTRUCTOR_STANDINGS
+    columns:
+      - name: CONSTRUCTOR_STANDINGS_ID
+        tests:
+          - unique
+          - not_null
+      - name: CONSTRUCTOR_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_CONSTRUCTORS')
+              field: CONSTRUCTOR_ID
+              severity: warn
+      - name: RACE_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_RACES')
+              field: RACE_ID
+              severity: warn
+
+  - name: TRANS_DRIVERS
+    columns:
+      - name: DRIVER_ID
+        tests:
+          - unique
+          - not_null
+
+  - name: TRANS_DRIVER_STANDINGS
+    columns:
+      - name: DRIVER_STANDINGS_ID
+        tests:
+          - unique
+          - not_null
+      - name: DRIVER_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_DRIVERS')
+              field: DRIVER_ID
+              severity: warn
+      - name: RACE_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_RACES')
+              field: RACE_ID
+              severity: warn
+
+  - name: TRANS_LAPTIMES
+    columns:
+      - name: DRIVER_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_DRIVERS')
+              field: DRIVER_ID
+              severity: warn
+      - name: RACE_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_RACES')
+              field: RACE_ID
+              severity: warn
+
+  - name: TRANS_QUALIFYING
+    columns:
+      - name: DRIVER_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_DRIVERS')
+              field: DRIVER_ID
+              severity: warn
+      - name: CONSTRUCTOR_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_CONSTRUCTORS')
+              field: CONSTRUCTOR_ID
+              severity: warn
+      - name: RACE_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_RACES')
+              field: RACE_ID
+              severity: warn
+
+  - name: TRANS_RACES
+    columns:
+      - name: CIRCUIT_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_CIRCUITS')
+              field: CIRCUIT_ID
+              severity: warn
+      - name: RACE_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_RACES')
+              field: RACE_ID
+              severity: warn
+
+  - name: TRANS_RESULTS
+    columns:
+      - name: RESULT_ID
+        tests:
+          - unique
+          - not_null
+      - name: DRIVER_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_DRIVERS')
+              field: DRIVER_ID
+              severity: warn
+      - name: CONSTRUCTOR_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_CONSTRUCTORS')
+              field: CONSTRUCTOR_ID
+              severity: warn
+      - name: RACE_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_RACES')
+              field: RACE_ID
+              severity: warn
+
+  - name: TRANS_SPRINT_RESULTS
+    columns:
+      - name: SPRINT_RESULT_ID
+        tests:
+          - unique
+          - not_null
+      - name: DRIVER_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_DRIVERS')
+              field: DRIVER_ID
+              severity: warn
+      - name: CONSTRUCTOR_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_CONSTRUCTORS')
+              field: CONSTRUCTOR_ID
+              severity: warn
+      - name: RACE_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('TRANS_RACES')
+              field: RACE_ID
+              severity: warn
+
+  - name: TRANS_STATUS
+    columns:
+      - name: STATUS_ID
+        tests:
+          - unique
+          - not_null
