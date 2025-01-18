@@ -95,7 +95,7 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ["TRACK", "NO_SCOPE, "SECTOR"]
+              values: ["TRACK", "NO_SCOPE", "SECTOR"]
       - name: SECTOR
         tests:
           - not_null
