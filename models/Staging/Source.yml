@@ -2,14 +2,16 @@ version: 2
 
 sources:
   - name: ASTON_MARTIN_DATA
-    database: ADO_P01_GROUP4_DATABASE
-    schema: ASTON_MARTIN_DATA
+    database: "{{ target.database }}"  # Dynamically resolves the database
+    schema: "{{ target.schema }}"      # Dynamically resolves the schema
     tables:
       - name: MEETINGS_API
         description: "Details of racing events, including location, time, and circuit information."
         columns:
           - name: CIRCUIT_KEY
-            description: "Primary Key of the Meetings table. The unique identifier for the circuit where the event takes place."
+            description: "Composite Key of the Meetings table. The unique identifier for the circuit where the event takes place."
+          - name: YEAR
+            description: "Composite Key of the Meetings table. The year the event takes place."            
           - name: CIRCUIT_SHORT_NAME
             description: "The short or common name of the circuit where the event takes place."
           - name: COUNTRY_CODE
@@ -30,8 +32,6 @@ sources:
             description: "The name of the meeting."
           - name: MEETING_OFFICIAL_NAME
             description: "The official name of the meeting."
-          - name: YEAR
-            description: "The year the event takes place."
 
       - name: POSITION_API
         description: "Details of driver positions in specific sessions, including meeting and session identifiers."
@@ -80,10 +80,10 @@ sources:
             description: "Composite Key for Stints table. The unique identifier for the session. Use 'latest' to identify the latest or current session."
           - name: STINT_NUMBER
             description: "Composite Key for Stints table. The sequential number of the stint within the session (starts at 1)."
+          - name: DRIVER_NUMBER
+            description: "Composite Key for Stints table. The unique number assigned to an F1 driver."
           - name: COMPOUND
             description: "The specific compound of tyre used during the stint (SOFT, MEDIUM, HARD, etc.)."
-          - name: DRIVER_NUMBER
-            description: "The unique number assigned to an F1 driver."
           - name: LAP_END
             description: "Number of the last completed lap in this stint."
           - name: LAP_START
