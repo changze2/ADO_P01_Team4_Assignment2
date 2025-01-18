@@ -25,7 +25,6 @@ models:
   ado_pipeline:
     # General configurations for all models
     +schema: "{{ target.schema }}"  # Use schema defined by the environment target
-    +snowflake_warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
 
     # Configurations for Staging models
     Staging:
