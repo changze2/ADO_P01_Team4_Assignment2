@@ -2,8 +2,8 @@ version: 2
 
 sources:
   - name: ASTON_MARTIN_DATA
-    database: ADO_P01_GROUP4_DATABASE
-    schema: ASTON_MARTIN_DATA
+    database: "{{ target.database }}"  # Dynamically resolves the database
+    schema: "{{ target.schema }}"      # Dynamically resolves the schema
     tables:
       - name: MEETINGS_API
         description: "Details of racing events, including location, time, and circuit information."

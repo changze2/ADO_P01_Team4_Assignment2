@@ -1,2 +1,2 @@
 SELECT *
-FROM {{ source('ASTON_MARTIN_DATA', 'MEETINGS_API') }}
+FROM {{ source(target.schema, 'MEETINGS_API') }}
