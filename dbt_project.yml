@@ -23,9 +23,6 @@ clean-targets:         # directories to be removed by `dbt clean`
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 models:
   ado_pipeline:
-    # General configurations for all models
-    +schema: "{{ target.schema }}"  # Use schema defined by the environment target
-
     # Configurations for Staging models
     Staging:
       +materialized: view
