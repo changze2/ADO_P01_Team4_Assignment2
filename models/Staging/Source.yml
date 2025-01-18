@@ -80,10 +80,10 @@ sources:
             description: "Composite Key for Stints table. The unique identifier for the session. Use 'latest' to identify the latest or current session."
           - name: STINT_NUMBER
             description: "Composite Key for Stints table. The sequential number of the stint within the session (starts at 1)."
+          - name: DRIVER_NUMBER
+            description: "Composite Key for Stints table. The unique number assigned to an F1 driver."
           - name: COMPOUND
             description: "The specific compound of tyre used during the stint (SOFT, MEDIUM, HARD, etc.)."
-          - name: DRIVER_NUMBER
-            description: "The unique number assigned to an F1 driver."
           - name: LAP_END
             description: "Number of the last completed lap in this stint."
           - name: LAP_START
