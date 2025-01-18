@@ -1,2 +1,2 @@
 SELECT *
-FROM {{ source(target.schema, 'RACE_CONTROL_API') }}
+FROM {{ source('ASTON_MARTIN_DATA', 'RACE_CONTROL_API') }}
