@@ -9,7 +9,9 @@ sources:
         description: "Details of racing events, including location, time, and circuit information."
         columns:
           - name: CIRCUIT_KEY
-            description: "Primary Key of the Meetings table. The unique identifier for the circuit where the event takes place."
+            description: "Composite Key of the Meetings table. The unique identifier for the circuit where the event takes place."
+          - name: YEAR
+            description: "Composite Key of the Meetings table. The year the event takes place."            
           - name: CIRCUIT_SHORT_NAME
             description: "The short or common name of the circuit where the event takes place."
           - name: COUNTRY_CODE
@@ -30,8 +32,6 @@ sources:
             description: "The name of the meeting."
           - name: MEETING_OFFICIAL_NAME
             description: "The official name of the meeting."
-          - name: YEAR
-            description: "The year the event takes place."
 
       - name: POSITION_API
         description: "Details of driver positions in specific sessions, including meeting and session identifiers."

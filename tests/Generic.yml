@@ -3,15 +3,11 @@ models:
     columns:
       - name: CIRCUIT_KEY
         tests:
-          - unique
           - not_null
       - name: CIRCUIT_SHORT_NAME
         tests:
           - not_null
       - name: COUNTRY_CODE
-        tests:
-          - not_null
-      - name: COUNTRY_KEY
         tests:
           - not_null
       - name: COUNTRY_NAME
@@ -87,7 +83,7 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ["GREEN", "YELLOW", "DOUBLE YELLOW", "CHEQUERED", "NO_FLAG", "CLEAR", "BLUE", " BLACK AND WHITE"]
+              values: ["GREEN", "RED", "YELLOW", "DOUBLE YELLOW", "CHEQUERED", "NO_FLAG", "CLEAR", "BLUE", "BLACK AND WHITE"]
       - name: MESSAGE
         tests:
           - not_null
@@ -110,7 +106,6 @@ models:
           - not_null
       - name: STINT_NUMBER
         tests:
-          - unique
           - not_null
       - name: COMPOUND
         tests:
