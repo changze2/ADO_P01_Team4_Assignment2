@@ -1,19 +1,18 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.utils.task_group import TaskGroup
 from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 import requests
 import apprise
 from datetime import datetime
 
-# Notification function
+# Function to send notifications via Apprise to Microsoft Teams
 def send_notification(message, **kwargs):
     teams_webhook_url = 'https://connectnpedu.webhook.office.com/webhookb2/6d86adbf-f30a-4761-84cb-2cd56efcdca4@cba9e115-3016-4462-a1ab-a565cba0cdf1/IncomingWebhook/22a69704773f49c5a427459d7ab53bb9/fb07c0af-703c-431b-966e-ccb9596892a7/V2g7yR_fc19jQrH4-CXX0dX_b8Dlel9J8_wpT8Z8jQlT01'
     aobj = apprise.Apprise()
     aobj.add(teams_webhook_url)
     aobj.notify(body=message, title="Airflow Notification", notify_type='info')
 
-# Data validation function
+# Generalized function to validate data in Snowflake
 def validate_data_in_snowflake(api_url, table_name, **kwargs):
     snowflake_hook = SnowflakeHook(snowflake_conn_id='snowflake_conn')
     conn = snowflake_hook.get_conn()
@@ -44,7 +43,7 @@ def validate_data_in_snowflake(api_url, table_name, **kwargs):
     conn.close()
     send_notification(message, **kwargs)
 
-# Data upload function
+# Generalized function to upload data to Snowflake
 def upload_data_to_snowflake(api_url, table_name, **kwargs):
     proceed_to_upload = kwargs['ti'].xcom_pull(key=f'proceed_to_upload_{table_name}', task_ids=f'validate_data_{table_name}')
     if not proceed_to_upload:
@@ -105,7 +104,7 @@ def upload_data_to_snowflake(api_url, table_name, **kwargs):
     conn.close()
     send_notification(f"Uploaded {len(new_rows)} rows to {table_name}.", **kwargs)
 
-# Define the DAG
+# Define the Airflow DAG
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
@@ -114,43 +113,42 @@ default_args = {
     'on_failure_callback': send_notification,
 }
 
+api_tasks = [
+    {"api_url": "https://api.openf1.org/v1/drivers", "table_name": "drivers_api"},
+    {"api_url": "https://api.openf1.org/v1/weather", "table_name": "weather_api"},
+    {"api_url": "https://api.openf1.org/v1/pit", "table_name": "pit_api"},
+    {"api_url": "https://api.openf1.org/v1/sessions", "table_name": "sessions_api"},
+    {"api_url": "https://api.openf1.org/v1/race_control", "table_name": "race_control_api"},
+    {"api_url": "https://api.openf1.org/v1/stints", "table_name": "stints_api"},
+    {"api_url": "https://api.openf1.org/v1/meetings", "table_name": "meetings_api"},
+]
+
 with DAG(
     'parallel_data_upload_dag',
     default_args=default_args,
-    description='Parallel data upload for multiple APIs to Snowflake',
+    description='DAG to upload data from multiple APIs to Snowflake in parallel',
     schedule_interval='@daily',
     start_date=datetime(2025, 1, 4),
     catchup=False,
-    max_active_runs=3,  # Parallelism control
     tags=['snowflake', 'api', 'parallel'],
 ) as dag:
 
-    # API and table mappings
-    api_table_mapping = {
-        'https://api.openf1.org/v1/drivers': 'drivers_api',
-        'https://api.openf1.org/v1/weather': 'weather_api',
-        'https://api.openf1.org/v1/pit': 'pit_api',
-        'https://api.openf1.org/v1/sessions': 'sessions_api',
-        'https://api.openf1.org/v1/race_control': 'race_control_api',
-        'https://api.openf1.org/v1/stints': 'stints_api',
-        'https://api.openf1.org/v1/meetings': 'meetings_api',
-    }
+    validate_tasks = []
+    upload_tasks = []
 
-    # Task Group for parallel execution
-    for api_url, table_name in api_table_mapping.items():
-        with TaskGroup(group_id=f"group_{table_name}") as task_group:
-            validate_task = PythonOperator(
-                task_id=f'validate_data_{table_name}',
-                python_callable=validate_data_in_snowflake,
-                op_kwargs={'api_url': api_url, 'table_name': table_name},
-                provide_context=True,
-            )
-
-            upload_task = PythonOperator(
-                task_id=f'upload_data_{table_name}',
-                python_callable=upload_data_to_snowflake,
-                op_kwargs={'api_url': api_url, 'table_name': table_name},
-                provide_context=True,
-            )
-
-            validate_task >> upload_task
+    for task in api_tasks:
+        validate_task = PythonOperator(
+            task_id=f'validate_data_{task["table_name"]}',
+            python_callable=validate_data_in_snowflake,
+            op_kwargs={'api_url': task["api_url"], 'table_name': task["table_name"]},
+            provide_context=True,
+        )
+        upload_task = PythonOperator(
+            task_id=f'upload_data_{task["table_name"]}',
+            python_callable=upload_data_to_snowflake,
+            op_kwargs={'api_url': task["api_url"], 'table_name': task["table_name"]},
+            provide_context=True,
+        )
+        validate_task >> upload_task
+        validate_tasks.append(validate_task)
+        upload_tasks.append(upload_task)
