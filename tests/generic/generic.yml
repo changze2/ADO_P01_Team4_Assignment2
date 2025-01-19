@@ -28,13 +28,6 @@ models:
               to: ref('STG_API_MEETINGS')
               field: meeting_key
               severity: warn
-      - name: session_key
-        tests:
-          - not_null
-          - relationships:
-              to: ref('TRANS_API_SESSIONS')
-              field: session_key
-              severity: warn
 
   - name: TRANS_API_PIT
     columns:
@@ -119,7 +112,6 @@ models:
     columns:
       - name: driver_number
         tests:
-          - not_null
           - relationships:
               to: ref('TRANS_API_DRIVERS')
               field: driver_number

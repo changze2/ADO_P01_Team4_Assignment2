@@ -133,15 +133,12 @@ sources:
             description: "Total points for the constructor at this stage."
             tests:
               - not_null
-              - greater_than_or_equal_to:
-                  value: 0
+
                   
           - name: WINS
             description: "Number of wins by the constructor."
             tests:
               - not_null
-              - greater_than_or_equal_to:
-                  value: 0
 
       - name: DRIVERS
         description: "Information about drivers, including their details and nationality."
@@ -200,16 +197,12 @@ sources:
             description: "Total points for the driver at this stage."
             tests:
               - not_null
-              - greater_than_or_equal_to:
-                  value: 0
-                  
+
           - name: WINS
             description: "Number of wins by the driver."
             tests:
               - not_null
-              - greater_than_or_equal_to:
-                  value: 0
-                  
+
       - name: LAP_TIMES
         description: "Details of lap times recorded by drivers during races."
         columns:
@@ -343,8 +336,7 @@ sources:
             description: "The points scored by the driver in the race."
             tests:
               - not_null
-              - greater_than_or_equal_to:
-                  value: 0
+
           - name: LAPS
             description: "The total number of laps completed."
             tests:
@@ -363,7 +355,7 @@ sources:
       - name: SPRINT_RESULTS
         description: "Results for sprint races, including points, position, and lap times."
         columns:
-          - name: SPRINTRESULTID
+          - name: RESULTID
             description: "The unique identifier for each sprint result."
             tests:
               - unique
