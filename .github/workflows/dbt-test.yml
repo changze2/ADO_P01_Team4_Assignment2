@@ -1,0 +1,76 @@
+name: dbt Testing and Deployment
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on push to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger the workflow on pull requests to the main branch
+
+jobs:
+  validate-dbt:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      # Step 3: Install dbt and dependencies
+      - name: Install dbt and Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install dbt-core dbt-snowflake
+          dbt deps
+
+      # Step 4: Create profiles.yml
+      - name: Create profiles.yml
+        run: |
+          mkdir -p ~/.dbt
+          echo "ado_pipeline:" > ~/.dbt/profiles.yml  # Use the profile name from dbt_project.yml
+          echo "  target: test" >> ~/.dbt/profiles.yml
+          echo "  outputs:" >> ~/.dbt/profiles.yml
+          echo "    test:" >> ~/.dbt/profiles.yml
+          echo "      type: snowflake" >> ~/.dbt/profiles.yml
+          echo "      account: \"${{ secrets.SNOWFLAKE_ACCOUNT }}\"" >> ~/.dbt/profiles.yml
+          echo "      user: \"${{ secrets.SNOWFLAKE_USERNAME }}\"" >> ~/.dbt/profiles.yml
+          echo "      password: \"${{ secrets.SNOWFLAKE_PASSWORD }}\"" >> ~/.dbt/profiles.yml
+          echo "      role: \"${{ secrets.SNOWFLAKE_ROLE }}\"" >> ~/.dbt/profiles.yml
+          echo "      database: \"${{ secrets.SNOWFLAKE_TEST_DATABASE }}\"" >> ~/.dbt/profiles.yml
+          echo "      warehouse: \"${{ secrets.SNOWFLAKE_WAREHOUSE }}\"" >> ~/.dbt/profiles.yml
+          echo "      schema: \"${{ secrets.SNOWFLAKE_TEST_SCHEMA }}\"" >> ~/.dbt/profiles.yml
+          echo "    prod:" >> ~/.dbt/profiles.yml
+          echo "      type: snowflake" >> ~/.dbt/profiles.yml
+          echo "      account: \"${{ secrets.SNOWFLAKE_ACCOUNT }}\"" >> ~/.dbt/profiles.yml
+          echo "      user: \"${{ secrets.SNOWFLAKE_USERNAME }}\"" >> ~/.dbt/profiles.yml
+          echo "      password: \"${{ secrets.SNOWFLAKE_PASSWORD }}\"" >> ~/.dbt/profiles.yml
+          echo "      role: \"${{ secrets.SNOWFLAKE_ROLE }}\"" >> ~/.dbt/profiles.yml
+          echo "      database: \"${{ secrets.SNOWFLAKE_DATABASE }}\"" >> ~/.dbt/profiles.yml
+          echo "      warehouse: \"${{ secrets.SNOWFLAKE_WAREHOUSE }}\"" >> ~/.dbt/profiles.yml
+          echo "      schema: \"${{ secrets.SNOWFLAKE_SCHEMA }}\"" >> ~/.dbt/profiles.yml
+
+      # Step 5: Run dbt Commands in Testing Environment
+      - name: Run dbt in Testing Environment
+        run: |
+          dbt debug --target test
+          dbt run --target test
+          dbt test --target test
+
+      # Step 6: Deploy dbt Models to Production
+      - name: Deploy to Production
+        if: success()
+        run: |
+          dbt debug --target prod
+          dbt run --target prod
+
+      # Step 7: Notify on Success
+      - name: Notify on Success
+        if: success()
+        run: echo "DBT Model Testing and Deployment executed successfully for branch ${{ github.ref_name }}"
