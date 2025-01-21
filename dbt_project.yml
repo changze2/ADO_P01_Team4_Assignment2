@@ -1,11 +1,11 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'ado_pipeline'
+name: 'dbt_testing'
 version: '1.0.0'
 
 # This setting configures which "profile" dbt uses for this project.
-profile: 'ado_pipeline'
+profile: 'dbt_testing'
 
 # These configurations specify where dbt should look for different types of files.
 model-paths: ["models"]
@@ -22,13 +22,22 @@ clean-targets:         # directories to be removed by `dbt clean`
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 models:
-  ado_pipeline:
-    # Configurations for Staging models
+  dbt_testing:
+    # Configurations for models under the 'Staging' folder
     Staging:
-      +schema: staging
       +materialized: view
+      +schema: staging  # Specify schema for staging models
 
-    # Configurations for Final models
-    Transformed:
-      +schema: transformed
+    # Configurations for models under the 'Transformation' folder
+    Transformation_Historical:
       +materialized: table
+      +schema: transformed  # Specify schema for transformation models
+
+    # Configurations for models under the 'Reporting' folder
+    Reporting:
+      +materialized: table
+      +schema: reporting  # Specify schema for reporting models
+
+    Transformation_API:
+      +materialized: incremental
+      +schema: transformed 
