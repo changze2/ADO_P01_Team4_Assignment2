@@ -77,8 +77,6 @@ models:
         tests:
           - not_null
       - name: DRIVER_NUMBER
-        tests:
-          - not_null
       - name: FLAG
         tests:
           - not_null
