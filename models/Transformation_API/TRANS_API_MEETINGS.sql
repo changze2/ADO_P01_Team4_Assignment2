@@ -1,7 +1,6 @@
 SELECT
     CIRCUIT_KEY,
     CIRCUIT_SHORT_NAME,
-    COUNTRY_KEY
     COUNTRY_CODE,
     COUNTRY_NAME,
     DATE_START,
@@ -14,5 +13,5 @@ SELECT
 FROM {{ ref('STG_API_MEETINGS') }}
 
 {% if is_incremental() %}
-    {{ incremental_meeting_key() }}
+    {{ incremental_session_meeting_key() }}
 {% endif %}
