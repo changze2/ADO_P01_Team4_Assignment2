@@ -70,7 +70,7 @@ jobs:
             echo "Found csv_files directory, proceeding with upload"
             # Check for .csv files inside the directory
             if ls ./csv_files/*.csv 1> /dev/null 2>&1; then
-              ~/snowflake/snowsql -c default -q "PUT file://./csv_files/*.csv @${SNOWFLAKE_STAGE} AUTO_COMPRESS = TRUE"
+              ~/snowflake/snowsql -c default -q "PUT file://./csv_files/*.csv @${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.${SNOWFLAKE_STAGE} AUTO_COMPRESS = TRUE"
             else
               echo "No .csv files found in the directory. Aborting upload."
               exit 1
@@ -83,7 +83,7 @@ jobs:
       # Step 7: List files in Snowflake stage
       - name: List files in Snowflake stage
         run: |
-          ~/snowflake/snowsql -c default -q "LIST @$SNOWFLAKE_STAGE;"
+          ~/snowflake/snowsql -c default -q "LIST @${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.${SNOWFLAKE_STAGE};"
 
       # Step 8: Load CSV files into Snowflake tables
       - name: Load CSV files into Snowflake tables
@@ -91,12 +91,12 @@ jobs:
           for file in ./csv_files/*.csv; do
             table_name=$(basename "$file" .csv)
             echo "Loading $file into $table_name"
-            ~/snowflake/snowsql -c default -q "COPY INTO ${table_name} FROM @$SNOWFLAKE_STAGE/$(basename "$file") FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+            ~/snowflake/snowsql -c default -q "COPY INTO ${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.${table_name} FROM @$SNOWFLAKE_DATABASE.${SNOWFLAKE_SCHEMA}.${SNOWFLAKE_STAGE}/$(basename "$file") FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
           done
 
       # Step 9: Verify loading status (optional)
       - name: Verify the load status
         run: |
-          ~/snowflake/snowsql -c default -q "SELECT COUNT(*) FROM circuits;"
-          ~/snowflake/snowsql -c default -q "SELECT COUNT(*) FROM constructor_results;"
-          ~/snowflake/snowsql -c default -q "SELECT COUNT(*) FROM constructors;"
+          ~/snowflake/snowsql -c default -q "SELECT COUNT(*) FROM ${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.circuits;"
+          ~/snowflake/snowsql -c default -q "SELECT COUNT(*) FROM ${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.constructor_results;"
+          ~/snowflake/snowsql -c default -q "SELECT COUNT(*) FROM ${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.constructors;"
