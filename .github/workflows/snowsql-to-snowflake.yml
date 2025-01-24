@@ -1,47 +1,39 @@
-name: Snowflake SQL Automation Pipeline
+name: Snowflake CSV Upload & Load
 
 on:
   push:
     branches:
-      - main  # Trigger the workflow on push to the main branch
+      - main  # Trigger when pushing to the main branch
   pull_request:
     branches:
-      - main  # Trigger the workflow on pull requests to the main branch
+      - main  # Trigger on pull request to the main branch
   schedule:
-    - cron: "0 1 * * *"  # Run at 1 AM Singapore Time every day
+    - cron: "0 1 * * *"  # Scheduled to run at 1 AM Singapore Time every day
 
 jobs:
-  run-sql-scripts:
-    runs-on: ubuntu-22.04  # Use a Linux-based runner
+  upload-and-load:
+    runs-on: ubuntu-22.04  # Use Ubuntu-based runner
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@master
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      # Download the SnowSQL installer
-      - name: Download SnowSQL
+      # Step 2: Install SnowSQL
+      - name: Download and install SnowSQL
         run: |
           curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.9-linux_x86_64.bash
-      # Install SnowSQL
-      - name: Install SnowSQL
-        run: |
           SNOWSQL_DEST=~/snowflake SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.9-linux_x86_64.bash
           echo "export PATH=\$PATH:~/snowflake/snowsql" >> ~/.profile
           source ~/.profile
-      # Test the SnowSQL installation by checking the version
-      - name: Test installation
+
+      # Step 3: Test SnowSQL installation
+      - name: Test SnowSQL installation
         run: |
           source ~/.profile
           ~/snowflake/snowsql -v
-      # Debug Snowflake credentials (without printing the password)
-      - name: Debug Snowflake credentials
-        run: |
-          echo "SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}"
-          echo "SNOWFLAKE_USER: ${SNOWFLAKE_USER}"
-          echo "SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}"
-          echo "SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}"
-          echo "SNOWFLAKE_SCHEMA: ${SNOWFLAKE_SCHEMA}"
-      # Set up Snowflake credentials using environment variables
+
+      # Step 4: Set up Snowflake credentials
       - name: Set up Snowflake credentials
         env:
           SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
@@ -58,17 +50,30 @@ jobs:
           echo "dbname = ${SNOWFLAKE_DATABASE}" >> $HOME/.snowsql/config
           echo "warehouse = ${SNOWFLAKE_WAREHOUSE}" >> $HOME/.snowsql/config
           echo "schemaname = ${SNOWFLAKE_SCHEMA}" >> $HOME/.snowsql/config
-     # Upload CSV files to Snowflake stage
-      - name: Upload CSV files
+
+      # Step 5: Upload CSV files to Snowflake Stage
+      - name: Upload CSV files to Snowflake Stage
         env:
           SNOWFLAKE_STAGE: ${{ secrets.SNOWFLAKE_STAGE }}
         run: |
-          ~/snowflake/snowsql -c default -q "PUT file://./ado-asg2-automation-pipeline/csv_files/*.csv @${SNOWFLAKE_STAGE}"
-          
-      # Load CSV files into tables
+          # Upload all CSV files in the 'csv_files' folder to the Snowflake stage
+          ~/snowflake/snowsql -c default -q "PUT file://./csv_files/*.csv @${SNOWFLAKE_STAGE}"
+
+      # Step 6: Load CSV files into Snowflake Tables
       - name: Load CSV files into Snowflake tables
         run: |
-          ~/snowflake/snowsql -c default -q "COPY INTO country FROM @${SNOWFLAKE_STAGE}/country.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO customers FROM @${SNOWFLAKE_STAGE}/customers.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO facebook_ads FROM @${SNOWFLAKE_STAGE}/facebook_ads.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          # Repeat for all your tables
+          # Copy data into the respective tables from the Snowflake stage
+          ~/snowflake/snowsql -c default -q "COPY INTO circuits FROM @${SNOWFLAKE_STAGE}/circuits.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO constructor_results FROM @${SNOWFLAKE_STAGE}/constructor_results.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO constructor_standings FROM @${SNOWFLAKE_STAGE}/constructor_standings.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO constructors FROM @${SNOWFLAKE_STAGE}/constructors.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO driver_standings FROM @${SNOWFLAKE_STAGE}/driver_standings.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO drivers FROM @${SNOWFLAKE_STAGE}/drivers.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO lap_times FROM @${SNOWFLAKE_STAGE}/lap_times.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO pit_stops FROM @${SNOWFLAKE_STAGE}/pit_stops.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO qualifying FROM @${SNOWFLAKE_STAGE}/qualifying.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO races FROM @${SNOWFLAKE_STAGE}/races.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO results FROM @${SNOWFLAKE_STAGE}/results.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO seasons FROM @${SNOWFLAKE_STAGE}/seasons.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO sprint_results FROM @${SNOWFLAKE_STAGE}/sprint_results.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO status FROM @${SNOWFLAKE_STAGE}/status.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
