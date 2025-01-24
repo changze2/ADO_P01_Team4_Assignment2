@@ -56,11 +56,19 @@ jobs:
           echo "warehouse = ${SNOWFLAKE_WAREHOUSE}" >> $HOME/.snowsql/config
           echo "schemaname = ${SNOWFLAKE_SCHEMA}" >> $HOME/.snowsql/config
 
-      # Step 5: List files in the repository to check paths
+      # Step 5: Debug Environment Variables
+      - name: Debug Environment Variables
+        run: |
+          echo "SNOWFLAKE_ACCOUNT = ${SNOWFLAKE_ACCOUNT}"
+          echo "SNOWFLAKE_DATABASE = ${SNOWFLAKE_DATABASE}"
+          echo "SNOWFLAKE_WAREHOUSE = ${SNOWFLAKE_WAREHOUSE}"
+          echo "SNOWFLAKE_SCHEMA = ${SNOWFLAKE_SCHEMA}"
+
+      # Step 6: List files in the repository to check paths
       - name: List files in the repository
         run: ls -alh ./csv_files
 
-      # Step 6: Upload CSV files to Snowflake Stage
+      # Step 7: Upload CSV files to Snowflake Stage
       - name: Upload CSV files to Snowflake Stage
         env:
           SNOWFLAKE_STAGE: ${{ secrets.SNOWFLAKE_STAGE }}
@@ -80,12 +88,12 @@ jobs:
             exit 1
           fi
 
-      # Step 7: List files in Snowflake stage
+      # Step 8: List files in Snowflake stage
       - name: List files in Snowflake stage
         run: |
           ~/snowflake/snowsql -c default -q "LIST @${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.${SNOWFLAKE_STAGE};"
 
-      # Step 8: Load CSV files into Snowflake tables
+      # Step 9: Load CSV files into Snowflake tables
       - name: Load CSV files into Snowflake tables
         run: |
           for file in ./csv_files/*.csv; do
@@ -94,7 +102,7 @@ jobs:
             ~/snowflake/snowsql -c default -q "COPY INTO ${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.${table_name} FROM @$SNOWFLAKE_DATABASE.${SNOWFLAKE_SCHEMA}.${SNOWFLAKE_STAGE}/$(basename "$file") FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
           done
 
-      # Step 9: Verify loading status (optional)
+      # Step 10: Verify loading status (optional)
       - name: Verify the load status
         run: |
           ~/snowflake/snowsql -c default -q "SELECT COUNT(*) FROM ${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.circuits;"
