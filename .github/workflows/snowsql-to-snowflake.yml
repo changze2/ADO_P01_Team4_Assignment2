@@ -58,19 +58,17 @@ jobs:
           echo "dbname = ${SNOWFLAKE_DATABASE}" >> $HOME/.snowsql/config
           echo "warehouse = ${SNOWFLAKE_WAREHOUSE}" >> $HOME/.snowsql/config
           echo "schemaname = ${SNOWFLAKE_SCHEMA}" >> $HOME/.snowsql/config
-      # Print the SnowSQL config file for debugging
-      - name: Print SnowSQL config file
-        run: cat $HOME/.snowsql/config
-
-      # Run SQL scripts from the repository
-      - name: Run SQL scripts in Snowflake
+     # Upload CSV files to Snowflake stage
+      - name: Upload CSV files
+        env:
+          SNOWFLAKE_STAGE: ${{ secrets.SNOWFLAKE_STAGE }}
         run: |
-          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/country.sql
-          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/customers.sql
-          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/facebook_ads.sql
-          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/order.sql
-          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/order_details.sql
-          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/payments.sql
-          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/product_reviews.sql
-          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/region.sql
-          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/vendors.sql
+          ~/snowflake/snowsql -c default -q "PUT file://./ado-asg2-automation-pipeline/csv_files/*.csv @${SNOWFLAKE_STAGE}"
+          
+      # Load CSV files into tables
+      - name: Load CSV files into Snowflake tables
+        run: |
+          ~/snowflake/snowsql -c default -q "COPY INTO country FROM @${SNOWFLAKE_STAGE}/country.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO customers FROM @${SNOWFLAKE_STAGE}/customers.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          ~/snowflake/snowsql -c default -q "COPY INTO facebook_ads FROM @${SNOWFLAKE_STAGE}/facebook_ads.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          # Repeat for all your tables
