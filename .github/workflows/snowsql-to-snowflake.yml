@@ -51,40 +51,23 @@ jobs:
           echo "warehouse = ${SNOWFLAKE_WAREHOUSE}" >> $HOME/.snowsql/config
           echo "schemaname = ${SNOWFLAKE_SCHEMA}" >> $HOME/.snowsql/config
 
-      # Step 5: Upload CSV files to Snowflake Stage
-      - name: Upload CSV files to Snowflake Stage
-        env:
-          SNOWFLAKE_STAGE: ${{ secrets.SNOWFLAKE_STAGE }}
+      # Step 5: Load CSV files from Snowflake stage into Snowflake tables
+      - name: Load CSV files from Snowflake stage into tables
         run: |
-          echo "Uploading CSV files to Snowflake stage..."
-          # Check if CSV files exist and upload them
-          if [ -d "./csv_files" ] && ls ./csv_files/*.csv 1> /dev/null 2>&1; then
-            for file in ./csv_files/*.csv; do
-              echo "Uploading $file to Snowflake stage..."
-              ~/snowflake/snowsql -c default -q "PUT file://$file @${SNOWFLAKE_STAGE}"
-            done
-          else
-            echo "No CSV files found in the directory. Aborting upload."
-            exit 1
-          fi
-
-      # Step 6: Load CSV files into Snowflake Tables
-      - name: Load CSV files into Snowflake tables
-        run: |
-          echo "Loading CSV files into Snowflake tables..."
-          # Loop through the CSV files and load them into corresponding tables
-          for file in ./csv_files/*.csv; do
-            table_name=$(basename "$file" .csv)  # Table name is derived from the file name
+          echo "Loading CSV files from Snowflake stage into tables..."
+          # Loop through the files in the Snowflake stage and load them into corresponding tables
+          for file in circuits.csv.gz pit_stops.csv.gz seasons.csv.gz constructor_results.csv.gz constructors.csv.gz races.csv.gz qualifying.csv.gz lap_times.csv.gz constructor_standings.csv.gz drivers.csv.gz circuits.csv.gz sprint_results.csv.gz driver_standings.csv.gz status.csv.gz results.csv.gz; do
+            table_name=$(basename "$file" .csv.gz)  # Deriving table name from the file name
             echo "Loading $file into table $table_name"
-            ~/snowflake/snowsql -c default -q "COPY INTO ${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.${table_name} FROM @$SNOWFLAKE_STAGE/$(basename "$file") FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+            ~/snowflake/snowsql -c default -q "COPY INTO ${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.${table_name} FROM @$SNOWFLAKE_STAGE/$file FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
           done
 
-      # Step 7: Verify loading status (optional)
+      # Step 6: Verify loading status (optional)
       - name: Verify loading status
         run: |
           echo "Verifying the load status..."
-          for file in ./csv_files/*.csv; do
-            table_name=$(basename "$file" .csv)
+          for file in circuits.csv.gz pit_stops.csv.gz seasons.csv.gz constructor_results.csv.gz constructors.csv.gz races.csv.gz qualifying.csv.gz lap_times.csv.gz constructor_standings.csv.gz drivers.csv.gz circuits.csv.gz sprint_results.csv.gz driver_standings.csv.gz status.csv.gz results.csv.gz; do
+            table_name=$(basename "$file" .csv.gz)
             echo "Checking row count for table $table_name"
             ~/snowflake/snowsql -c default -q "SELECT COUNT(*) FROM ${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.${table_name};"
           done
