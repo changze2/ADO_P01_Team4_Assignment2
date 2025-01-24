@@ -51,29 +51,51 @@ jobs:
           echo "warehouse = ${SNOWFLAKE_WAREHOUSE}" >> $HOME/.snowsql/config
           echo "schemaname = ${SNOWFLAKE_SCHEMA}" >> $HOME/.snowsql/config
 
-      # Step 5: Upload CSV files to Snowflake Stage
+      # Step 5: List the files in the repository to check paths
+      - name: List files in the repository
+        run: ls -alh ./csv_files
+
+      # Step 6: Upload CSV files to Snowflake Stage
       - name: Upload CSV files to Snowflake Stage
         env:
           SNOWFLAKE_STAGE: ${{ secrets.SNOWFLAKE_STAGE }}
         run: |
-          # Upload all CSV files in the 'csv_files' folder to the Snowflake stage
-          ~/snowflake/snowsql -c default -q "PUT file://./csv_files/*.csv @${SNOWFLAKE_STAGE}"
+          # Check if files exist in the 'csv_files' folder before uploading
+          if [ -d "./csv_files" ]; then
+            echo "Found csv_files directory, proceeding with upload"
+            ~/snowflake/snowsql -c default -q "PUT file://./csv_files/*.csv @${SNOWFLAKE_STAGE} AUTO_COMPRESS = TRUE"
+          else
+            echo "No 'csv_files' directory found. Aborting upload."
+            exit 1
+          fi
 
-      # Step 6: Load CSV files into Snowflake Tables
+      # Step 7: Check the files in the Snowflake stage
+      - name: List files in Snowflake stage
+        run: |
+          ~/snowflake/snowsql -c default -q "LIST @${SNOWFLAKE_STAGE};"
+
+      # Step 8: Load CSV files into Snowflake Tables
       - name: Load CSV files into Snowflake tables
         run: |
-          # Copy data into the respective tables from the Snowflake stage
-          ~/snowflake/snowsql -c default -q "COPY INTO circuits FROM @${SNOWFLAKE_STAGE}/circuits.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO constructor_results FROM @${SNOWFLAKE_STAGE}/constructor_results.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO constructor_standings FROM @${SNOWFLAKE_STAGE}/constructor_standings.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO constructors FROM @${SNOWFLAKE_STAGE}/constructors.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO driver_standings FROM @${SNOWFLAKE_STAGE}/driver_standings.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO drivers FROM @${SNOWFLAKE_STAGE}/drivers.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO lap_times FROM @${SNOWFLAKE_STAGE}/lap_times.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO pit_stops FROM @${SNOWFLAKE_STAGE}/pit_stops.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO qualifying FROM @${SNOWFLAKE_STAGE}/qualifying.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO races FROM @${SNOWFLAKE_STAGE}/races.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO results FROM @${SNOWFLAKE_STAGE}/results.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO seasons FROM @${SNOWFLAKE_STAGE}/seasons.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO sprint_results FROM @${SNOWFLAKE_STAGE}/sprint_results.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
-          ~/snowflake/snowsql -c default -q "COPY INTO status FROM @${SNOWFLAKE_STAGE}/status.csv FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          # Load CSV files into respective tables from the Snowflake stage
+          ~/snowflake/snowsql -c default -q "COPY INTO circuits FROM @${SNOWFLAKE_STAGE}/circuits.csv.gz FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+          ~/snowflake/snowsql -c default -q "COPY INTO constructor_results FROM @${SNOWFLAKE_STAGE}/constructor_results.csv.gz FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+          ~/snowflake/snowsql -c default -q "COPY INTO constructor_standings FROM @${SNOWFLAKE_STAGE}/constructor_standings.csv.gz FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+          ~/snowflake/snowsql -c default -q "COPY INTO constructors FROM @${SNOWFLAKE_STAGE}/constructors.csv.gz FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+          ~/snowflake/snowsql -c default -q "COPY INTO driver_standings FROM @${SNOWFLAKE_STAGE}/driver_standings.csv.gz FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+          ~/snowflake/snowsql -c default -q "COPY INTO drivers FROM @${SNOWFLAKE_STAGE}/drivers.csv.gz FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+          ~/snowflake/snowsql -c default -q "COPY INTO lap_times FROM @${SNOWFLAKE_STAGE}/lap_times.csv.gz FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+          ~/snowflake/snowsql -c default -q "COPY INTO pit_stops FROM @${SNOWFLAKE_STAGE}/pit_stops.csv.gz FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+          ~/snowflake/snowsql -c default -q "COPY INTO qualifying FROM @${SNOWFLAKE_STAGE}/qualifying.csv.gz FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+          ~/snowflake/snowsql -c default -q "COPY INTO races FROM @${SNOWFLAKE_STAGE}/races.csv.gz FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+          ~/snowflake/snowsql -c default -q "COPY INTO results FROM @${SNOWFLAKE_STAGE}/results.csv.gz FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+          ~/snowflake/snowsql -c default -q "COPY INTO seasons FROM @${SNOWFLAKE_STAGE}/seasons.csv.gz FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+          ~/snowflake/snowsql -c default -q "COPY INTO sprint_results FROM @${SNOWFLAKE_STAGE}/sprint_results.csv.gz FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+          ~/snowflake/snowsql -c default -q "COPY INTO status FROM @${SNOWFLAKE_STAGE}/status.csv.gz FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1 COMPRESSION = 'GZIP')"
+
+      # Step 9: Verify loading status (optional)
+      - name: Verify the load status
+        run: |
+          ~/snowflake/snowsql -c default -q "SELECT COUNT(*) FROM circuits;"
+          ~/snowflake/snowsql -c default -q "SELECT COUNT(*) FROM constructor_results;"
+          ~/snowflake/snowsql -c default -q "SELECT COUNT(*) FROM constructors;"
