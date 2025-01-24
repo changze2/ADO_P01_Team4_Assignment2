@@ -1,0 +1,76 @@
+name: Snowflake SQL Automation Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on push to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger the workflow on pull requests to the main branch
+  schedule:
+    - cron: "0 1 * * *"  # Run at 1 AM Singapore Time every day
+
+jobs:
+  run-sql-scripts:
+    runs-on: ubuntu-22.04  # Use a Linux-based runner
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      # Download the SnowSQL installer
+      - name: Download SnowSQL
+        run: |
+          curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.9-linux_x86_64.bash
+      # Install SnowSQL
+      - name: Install SnowSQL
+        run: |
+          SNOWSQL_DEST=~/snowflake SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.9-linux_x86_64.bash
+          echo "export PATH=\$PATH:~/snowflake/snowsql" >> ~/.profile
+          source ~/.profile
+      # Test the SnowSQL installation by checking the version
+      - name: Test installation
+        run: |
+          source ~/.profile
+          ~/snowflake/snowsql -v
+      # Debug Snowflake credentials (without printing the password)
+      - name: Debug Snowflake credentials
+        run: |
+          echo "SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}"
+          echo "SNOWFLAKE_USER: ${SNOWFLAKE_USER}"
+          echo "SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}"
+          echo "SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}"
+          echo "SNOWFLAKE_SCHEMA: ${SNOWFLAKE_SCHEMA}"
+      # Set up Snowflake credentials using environment variables
+      - name: Set up Snowflake credentials
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
+        run: |
+          echo "[connections.default]" > $HOME/.snowsql/config
+          echo "accountname = ${SNOWFLAKE_ACCOUNT}" >> $HOME/.snowsql/config
+          echo "username = ${SNOWFLAKE_USER}" >> $HOME/.snowsql/config
+          echo "password = ${SNOWFLAKE_PASSWORD}" >> $HOME/.snowsql/config
+          echo "dbname = ${SNOWFLAKE_DATABASE}" >> $HOME/.snowsql/config
+          echo "warehouse = ${SNOWFLAKE_WAREHOUSE}" >> $HOME/.snowsql/config
+          echo "schemaname = ${SNOWFLAKE_SCHEMA}" >> $HOME/.snowsql/config
+      # Print the SnowSQL config file for debugging
+      - name: Print SnowSQL config file
+        run: cat $HOME/.snowsql/config
+
+      # Run SQL scripts from the repository
+      - name: Run SQL scripts in Snowflake
+        run: |
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/country.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/customers.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/facebook_ads.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/order.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/order_details.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/payments.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/product_reviews.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/region.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/vendors.sql
