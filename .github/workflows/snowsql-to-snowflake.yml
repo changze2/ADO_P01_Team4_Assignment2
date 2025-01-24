@@ -78,7 +78,7 @@ jobs:
           for file in circuits.csv pit_stops.csv seasons.csv constructor_results.csv constructors.csv races.csv qualifying.csv lap_times.csv constructor_standings.csv drivers.csv circuits.csv sprint_results.csv driver_standings.csv status.csv results.csv; do
             table_name=$(basename "$file" .csv)  # Deriving table name from the file name
             echo "Loading $file into table $table_name"
-            ~/snowflake/snowsql -c default -q "COPY INTO ${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.${table_name} FROM @$SNOWFLAKE_STAGE/$file FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+           ~/snowflake/snowsql -c default -q "COPY INTO ${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.${table_name} FROM @$SNOWFLAKE_STAGE/$(basename "$file") FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
           done
 
       # Step 7: Verify loading status (optional)
