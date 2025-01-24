@@ -63,7 +63,7 @@ jobs:
               echo "Uploading $file to Snowflake stage..."
               # Remove the '.csv.gz' suffix if present, to upload as plain '.csv'
               file_name=$(basename "$file")
-              ~/snowflake/snowsql -c default -q "PUT file://$file @${SNOWFLAKE_STAGE}/$file_name"
+              ~/snowflake/snowsql -c default -q "PUT file://$file @${SNOWFLAKE_STAGE} AUTO_COMPRESS=FALSE"
             done
           else
             echo "No CSV files found in the directory. Aborting upload."
