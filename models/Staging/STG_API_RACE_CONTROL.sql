@@ -1,7 +1,6 @@
 SELECT *
 FROM {{ source('ASTON_MARTIN_DATA', 'RACE_CONTROL_API') }}
 WHERE COALESCE(
-    NULLIF(DATE, ''), 
     NULLIF(CATEGORY, ''), 
     NULLIF(FLAG, ''), 
     NULLIF(SCOPE, ''), 
