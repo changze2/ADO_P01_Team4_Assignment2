@@ -34,7 +34,7 @@ jobs:
       - name: Create profiles.yml
         run: |
           mkdir -p ~/.dbt
-          echo "ado_pipeline:" > ~/.dbt/profiles.yml  # Use the profile name from dbt_project.yml
+          echo "dbt_testing:" > ~/.dbt/profiles.yml  # Use the profile name from dbt_project.yml
           echo "  target: test" >> ~/.dbt/profiles.yml
           echo "  outputs:" >> ~/.dbt/profiles.yml
           echo "    test:" >> ~/.dbt/profiles.yml
