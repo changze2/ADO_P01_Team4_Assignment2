@@ -150,7 +150,7 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ["TRACK", "NO_SCOPE", "SECTOR"]
+              values: ["TRACK", "NO_SCOPE", "SECTOR", "DRIVER"]
 
   - name: TRANS_API_STINTS
     columns:
