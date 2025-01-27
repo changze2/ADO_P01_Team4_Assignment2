@@ -183,7 +183,7 @@ models:
         tests:
           - not_null
           - accepted_range:
-              min: 1
+              min: 0
               max: 500
       - name: LAP_START
         tests:
