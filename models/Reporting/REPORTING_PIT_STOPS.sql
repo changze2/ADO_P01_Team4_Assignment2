@@ -5,7 +5,7 @@ WITH NewResults AS (
         races.DATE AS RACE_DATE,
         c.NAME AS CIRCUIT_NAME,
         c.LOCATION AS CIRCUIT_LOCATION,
-        con.CONSTRUCTOR_NAME,
+        con.NAME AS CONSTRUCTOR_NAME,
         d.FULL_NAME AS DRIVER_NAME
     FROM 
         {{ ref('TRANS_RESULTS') }} r
