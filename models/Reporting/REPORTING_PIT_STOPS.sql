@@ -1,21 +1,41 @@
 WITH NewResults AS (
     SELECT 
-        r.*,
+        r.RESULT_ID,
+        r.RACE_ID,
+        r.DRIVER_ID,
+        r.CONSTRUCTOR_ID,
+        r.NUMBER,
+        r.GRID,
+        r.POSITIONTEXT,
+        r.POSITION_ORDER,
+        r.POINTS,
         r.LAPS AS RESULTS_LAPS,
+        r.TIME_INCREMENT,
+        r.FASTESTLAPTIME_SECONDS,
         r.MILLISECONDS AS RESULTS_MILLISECONDS,
+        r.FASTEST_LAP,
+        r.RANK,
+        r.FASTEST_LAP_SPEED,
+        r.STATUS,
         races.NAME AS RACE_NAME,
         races.DATE AS RACE_DATE,
         c.NAME AS CIRCUIT_NAME,
         c.LOCATION AS CIRCUIT_LOCATION,
         con.NAME AS CONSTRUCTOR_NAME,
-        d.FULL_NAME AS DRIVER_NAME
+        d.FULL_NAME AS DRIVER_NAME,
+        r.TOTAL_PIT_MILLISECONDS,
+        r.PIT_PERCENTAGE
     FROM 
         {{ ref('TRANS_RESULTS') }} r
-    LEFT JOIN {{ ref('TRANS_RACES') }} races ON r.RACE_ID = races.RACE_ID
-    LEFT JOIN {{ ref('TRANS_CIRCUITS') }} c ON races.CIRCUIT_ID = c.CIRCUIT_ID
-    LEFT JOIN {{ ref('TRANS_CONSTRUCTORS') }} con ON r.CONSTRUCTOR_ID = con.CONSTRUCTOR_ID
-    LEFT JOIN {{ ref('TRANS_DRIVERS') }} d ON r.DRIVER_ID = d.DRIVER_ID
-),
+    LEFT JOIN {{ ref('TRANS_RACES') }} races 
+        ON r.RACE_ID = races.RACE_ID
+    LEFT JOIN {{ ref('TRANS_CIRCUITS') }} c 
+        ON races.CIRCUIT_ID = c.CIRCUIT_ID
+    LEFT JOIN {{ ref('TRANS_CONSTRUCTORS') }} con 
+        ON r.CONSTRUCTOR_ID = con.CONSTRUCTOR_ID
+    LEFT JOIN {{ ref('TRANS_DRIVERS') }} d 
+        ON r.DRIVER_ID = d.DRIVER_ID
+)
 NewPitStops AS (
     SELECT 
         ps.RACE_ID,
