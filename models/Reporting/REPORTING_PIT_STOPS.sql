@@ -24,7 +24,7 @@ NewPitStops AS (
         nr.DRIVER_NAME,
         nr.CONSTRUCTOR_NAME
     FROM 
-        {{ ref('TRANS_PITSTOPS') }} ps
+        {{ ref('TRANS_PIT_STOPS') }} ps
     LEFT JOIN {{ ref('TRANS_RACES') }} races ON ps.RACE_ID = races.RACE_ID
     LEFT JOIN {{ ref('TRANS_CIRCUITS') }} c ON races.CIRCUIT_ID = c.CIRCUIT_ID
     LEFT JOIN (
