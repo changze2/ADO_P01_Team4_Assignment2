@@ -1,6 +1,8 @@
 WITH NewResults AS (
     SELECT 
         r.*,
+        r.LAPS AS RESULTS_LAPS,
+        r.MILLISECONDS AS RESULTS_MILLISECONDS,
         races.NAME AS RACE_NAME,
         races.DATE AS RACE_DATE,
         c.NAME AS CIRCUIT_NAME,
@@ -16,7 +18,13 @@ WITH NewResults AS (
 ),
 NewPitStops AS (
     SELECT 
-        ps.*,
+        ps.RACE_ID
+        ps.DRIVER_ID
+        ps.LAP AS PIT_LAPS,
+        ps.STOP AS PIT_STOPS,
+        ps.TIME AS PIT_TIME,
+        ps.DURATION AS PIT_DURATION,
+        ps.MILLISECONDS AS PIT_MILLISECONDS
         races.NAME AS RACE_NAME,
         races.DATE AS RACE_DATE,
         c.NAME AS CIRCUIT_NAME,
