@@ -1,8 +1,8 @@
 WITH NewResults AS (
     SELECT 
         r.*,
-        races.RACE_NAME,
-        races.RACE_DATE,
+        races.NAME AS RACE_NAME,
+        races.DATE AS RACE_DATE,
         c.CIRCUIT_NAME,
         c.LOCATION AS CIRCUIT_LOCATION,
         con.CONSTRUCTOR_NAME,
@@ -17,8 +17,8 @@ WITH NewResults AS (
 NewPitStops AS (
     SELECT 
         ps.*,
-        races.RACE_NAME,
-        races.RACE_DATE,
+        races.NAME AS RACE_NAME,
+        races.DATE AS RACE_DATE,
         c.CIRCUIT_NAME,
         c.LOCATION AS CIRCUIT_LOCATION,
         nr.DRIVER_NAME,
