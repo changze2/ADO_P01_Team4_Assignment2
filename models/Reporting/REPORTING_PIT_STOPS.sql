@@ -3,10 +3,10 @@ WITH NewResults AS (
         r.*,
         races.NAME AS RACE_NAME,
         races.DATE AS RACE_DATE,
-        c.CIRCUIT_NAME,
+        c.NAME AS CIRCUIT_NAME,
         c.LOCATION AS CIRCUIT_LOCATION,
         con.CONSTRUCTOR_NAME,
-        d.DRIVER_NAME
+        d.FULL_NAME AS DRIVER_NAME
     FROM 
         {{ ref('TRANS_RESULTS') }} r
     LEFT JOIN {{ ref('TRANS_RACES') }} races ON r.RACE_ID = races.RACE_ID
@@ -19,7 +19,7 @@ NewPitStops AS (
         ps.*,
         races.NAME AS RACE_NAME,
         races.DATE AS RACE_DATE,
-        c.CIRCUIT_NAME,
+        c.NAME AS CIRCUIT_NAME,
         c.LOCATION AS CIRCUIT_LOCATION,
         nr.DRIVER_NAME,
         nr.CONSTRUCTOR_NAME
