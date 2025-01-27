@@ -61,13 +61,13 @@ jobs:
         run: |
           dbt debug --target test
           dbt run --target test
-          dbt test --target test
 
       # Step 6: Deploy dbt Models to Production
       - name: Deploy to Production
         if: success()
         run: |
           dbt debug --target prod
+          dbt test --target prod
           dbt run --target prod
 
       # Step 7: Notify on Success
