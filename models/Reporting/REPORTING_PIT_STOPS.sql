@@ -52,4 +52,4 @@ SELECT
 FROM 
     NewResults nr
 LEFT JOIN PitStopAggregates psa 
-    ON nr.RACE_ID = psa.RACE_ID AND nr.DRIVER_ID = psa.DRIVER_ID;
+    ON nr.RACE_ID = psa.RACE_ID AND nr.DRIVER_ID = psa.DRIVER_ID
