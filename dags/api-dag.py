@@ -127,7 +127,7 @@ with DAG(
     'parallel_data_upload_dag',
     default_args=default_args,
     description='DAG to upload data from multiple APIs to Snowflake in parallel',
-    schedule_interval='@daily',
+    schedule_interval='0 0 * * *',  # Schedule the DAG to run at 12 AM daily,
     start_date=datetime(2025, 1, 4),
     catchup=False,
     tags=['snowflake', 'api', 'parallel'],
