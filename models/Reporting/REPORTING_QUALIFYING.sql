@@ -1,3 +1,7 @@
+-- Query Purpose:
+-- This query combines qualifying data with races, drivers, constructors, and circuits 
+-- to provide a comprehensive dataset for analyzing driver qualifying performances.
+
 SELECT
     -- Qualifying Table Fields
     q.QUALIFY_ID,

@@ -1,4 +1,7 @@
--- Joining information from Constructors, Constructor_Results, Constructor_Standings, and Races Tables 
+-- Query Purpose:
+-- This query combines constructor-related data from multiple tables, 
+-- including constructor standings, results, constructor metadata, and race details.
+
 
 SELECT
     -- Constructors Table Fields

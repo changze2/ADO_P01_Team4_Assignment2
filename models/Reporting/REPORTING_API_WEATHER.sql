@@ -1,3 +1,8 @@
+-- Query Purpose:
+-- This query combines weather data with meeting and session details to provide 
+-- a comprehensive dataset linking weather conditions to specific Formula 1 events.
+
+
 SELECT 
     -- Weather Information
     weather.AIR_TEMPERATURE_FILLED,
@@ -22,7 +27,7 @@ SELECT
     sessions.DATE_END AS SESSION_DATE_END,
     sessions.DATE_START AS SESSION_DATE_START,
     sessions.SESSION_NAME,
-    sessions.SESSION_TYPE,
+    sessions.SESSION_TYPE
 
 
 FROM {{ ref('TRANS_API_WEATHER') }} AS weather

@@ -1,3 +1,8 @@
+-- Query Purpose:
+-- This query integrates race results, pit stop data, and aggregated pit stop performance metrics
+-- to analyze how pit stops impact driver race performance.
+
+
 WITH NewResults AS (
     SELECT 
         r.RESULT_ID,

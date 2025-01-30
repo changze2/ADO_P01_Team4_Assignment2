@@ -1,3 +1,9 @@
+-- Query Purpose:
+-- This query combines race results with detailed metadata about races, circuits, drivers, 
+-- and constructors to provide a structured dataset for Formula 1 race analysis.
+
+
+
 SELECT
     -- Results Table Fields
     results.RESULT_ID,

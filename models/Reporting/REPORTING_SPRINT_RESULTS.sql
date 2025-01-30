@@ -1,3 +1,7 @@
+-- Query Purpose:
+-- This query consolidates Formula 1 sprint race results by joining sprint race performance 
+-- with race details, circuit metadata, driver information, and constructor details.
+
 SELECT
     -- Sprint Results Table Fields
     sprint.SPRINT_RESULT_ID,

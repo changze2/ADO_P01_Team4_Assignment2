@@ -1,3 +1,8 @@
+-- Query Purpose:
+-- This query consolidates driver data with multiple race-related tables,
+-- including pit stops, positions, stints, race control messages, sessions, and meetings.
+
+
 SELECT 
     -- Driver Information
     drivers.DRIVER_NUMBER,
@@ -76,6 +81,7 @@ LEFT JOIN {{ ref('TRANS_API_SESSIONS') }} AS sessions
 LEFT JOIN {{ ref('TRANS_API_MEETINGS') }} AS meetings
     ON drivers.MEETING_KEY = meetings.MEETING_KEY
 
+-- Incremental Processing: Only run on new data if incremental mode is enabled
 {% if is_incremental() %}
     {{ incremental_session_meeting_key() }}
 {% endif %}

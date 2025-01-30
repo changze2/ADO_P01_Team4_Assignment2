@@ -1,4 +1,7 @@
--- Left Join Drivers_standings to Drivers to obtain information about drivers from Driver_standings table
+-- Query Purpose:
+-- This query combines driver standings data with driver details, linking performance metrics 
+-- (e.g., points, position, wins) with personal driver information (e.g., full name, nationality, date of birth).
+
 
 SELECT
     -- Driver Standings Table Fields

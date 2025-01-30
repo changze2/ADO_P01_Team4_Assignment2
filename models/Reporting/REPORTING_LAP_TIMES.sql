@@ -1,5 +1,6 @@
--- Joining information from Lap_times, Drivers, Races, and Circuits Tables 
--- Change column names to identify attributes easily 
+-- Query Purpose:
+-- This query combines lap time data with driver, race, and circuit details to provide 
+-- a comprehensive dataset for analyzing driver performance on different tracks.
 
 SELECT 
     -- Lap Times Table Fields 
