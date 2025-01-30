@@ -19,7 +19,7 @@ dbt_snowflake_dag = DbtDag(
     operator_args={"install_deps": True},
     profile_config=profile_config,
     execution_config=ExecutionConfig(dbt_executable_path=f"{os.environ['AIRFLOW_HOME']}/dbt_venv/bin/dbt",),
-    schedule_interval="@daily",
+    schedule_interval="0 1 * * *",
     start_date=datetime(2024, 12, 25),
     catchup=False,
     dag_id="dbt_dag",
