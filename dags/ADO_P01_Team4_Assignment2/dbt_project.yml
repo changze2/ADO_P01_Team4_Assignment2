@@ -1,0 +1,54 @@
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'dbt_testing'
+version: '1.0.0'
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'dbt_testing'
+
+# These configurations specify where dbt should look for different types of files.
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+models: 
+  dbt_testing: 
+    # Configurations for models under the 'Staging' folder 
+    Staging: 
+      +materialized: view 
+      +enabled: true 
+      +schema: staging  # Specify schema for staging models 
+      +snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE 
+
+    # Configurations for models under the 'Transformation' folder 
+    Transformation_Historical: 
+      +materialized: table 
+      +enabled: true 
+      +transient: false  
+      +schema: transformed  # Specify schema for transformation models 
+      +snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE 
+
+    # Configurations for models under the 'Reporting' folder 
+    Reporting: 
+      +materialized: table 
+      +enabled: true 
+      +transient: false  
+      +schema: reporting  # Specify schema for reporting models 
+      +snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE 
+
+    Transformation_API: 
+      +materialized: incremental 
+      +enabled: true  
+      +transient: false  
+      +schema: transformed  
+      snowflake_warehouse: ADO_P01_GROUP4_WAREHOUSE
