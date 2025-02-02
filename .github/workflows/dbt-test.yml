@@ -3,10 +3,10 @@ name: dbt Testing and Deployment
 on:
   push:
     branches:
-      - main  # Trigger the workflow on push to the main branch
+      - main-dbt  # Trigger the workflow on push to the main branch
   pull_request:
     branches:
-      - main  # Trigger the workflow on pull requests to the main branch
+      - main-dbt  # Trigger the workflow on pull requests to the main branch
 
 jobs:
   validate-dbt:
