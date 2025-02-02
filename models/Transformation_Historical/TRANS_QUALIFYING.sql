@@ -1,6 +1,6 @@
 -- Create 'qualified_q2' column: 1 if Q2 is not '\N' and not NULL, else 0
 -- Create 'qualified_q3' column: 1 if Q3 is not '\N' and not NULL, else 0
-
+-- retrieved qualifying date and qualifying time from the race data 
 
 SELECT
     QUALIFYID as QUALIFY_ID,

@@ -1,5 +1,5 @@
 -- Replace values in POSITIONTEXT using the updated mapping
--- Convert TIME to seconds and rename column to TIME_INCREMENT
+-- renamed TIME column to TIME_INCREMENT
 -- Convert FASTESTLAPTIME to seconds and rename column
 -- Include STATUS column from the STATUS table
 -- Join the STATUS table to get the status column
