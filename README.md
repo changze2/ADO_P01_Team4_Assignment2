@@ -1,3 +1,9 @@
+### IMPORTANT!!!
+If you are downloading this locally, make sure you have the profiles.yml already created in your system. Run the command line below, replacing /path/to/new with the directory your profiles.yml is in.
+```
+dbt run --profiles-dir /path/to/new 
+```
+
 Welcome to your new dbt project!
 
 ### Using the starter project
