@@ -1,2 +1,0 @@
-SELECT *
-FROM {{ source('ASTON_MARTIN_DATA', 'SESSIONS_API') }}
