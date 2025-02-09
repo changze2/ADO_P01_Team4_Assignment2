@@ -38,7 +38,7 @@ pull_dbt_branch = BashOperator(
     dag=dag,
 )
 
-# dbt DAG task configuration
+# dbt DAG configuration
 dbt_snowflake_dag = DbtDag(
     project_config=ProjectConfig("/usr/local/airflow/dags/dbt_testing"),
     operator_args={"install_deps": True},
@@ -47,7 +47,7 @@ dbt_snowflake_dag = DbtDag(
     schedule_interval="0 1 * * *",
     start_date=datetime(2024, 12, 25),
     catchup=False,
-    dag_id="dbt_dag",
+    dag=dag,  # Pass the existing Airflow DAG to DbtDag
 )
 
 # Task sequence: Pull the branch first, then run dbt
