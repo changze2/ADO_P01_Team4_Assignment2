@@ -1,9 +1,12 @@
 name: Astronomer CI - Create preview Deployment
 
 on:
-  create:
+  push:
     branches:
-    - "**"
+      - main-airflow
+  pull_request:
+    branches:
+      - main-airflow 
 
 env:
   ## Set your Workspace API key token as a GitHub secret
