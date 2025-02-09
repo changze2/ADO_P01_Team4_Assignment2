@@ -1,0 +1,310 @@
+version: 2
+
+sources:
+  - name: ASTON_MARTIN_DATA
+    database: "{{ target.database }}"  # Dynamically resolves the database
+    schema: "{{ target.schema }}"      # Dynamically resolves the schema
+    tables:
+      - name: CIRCUITS
+        description: "Information about racing circuits including location and unique characteristics."
+        columns:
+          - name: CIRCUITID
+            description: "The unique identifier for each circuit."
+          - name: CIRCUITREF
+            description: "A reference string for the circuit."
+          - name: NAME
+            description: "The name of the circuit."
+
+      - name: CONSTRUCTORS
+        description: "Information about the constructors, including their name, nationality, and other details."
+        columns:
+          - name: CONSTRUCTORID
+            description: "The unique identifier for each constructor."
+          - name: CONSTRUCTORREF
+            description: "A unique reference string for the constructor."
+          - name: NAME
+            description: "The name of the constructor."
+
+      - name: RACES
+        description: "Details of each race including date, time, and associated practice and qualifying sessions."
+        columns:
+          - name: RACEID
+            description: "The unique identifier for each race."
+          - name: YEAR
+            description: "The year the race was held."
+          - name: ROUND
+            description: "The round number of the race in the season."
+          - name: CIRCUITID
+            description: "Identifier for the circuit where the race was held."
+          - name: NAME
+            description: "The name of the race."
+          - name: DATE
+            description: "The date on which the race is scheduled."
+
+      - name: CONSTRUCTOR_RESULTS
+        description: "Results for constructors in specific races, including points and status."
+        columns:
+          - name: CONSTRUCTORRESULTSID
+            description: "The unique identifier for each constructor result."
+          - name: RACEID
+            description: "The unique identifier for the race."
+          - name: CONSTRUCTORID
+            description: "The unique identifier for the constructor."
+          - name: POINTS
+            description: "Points scored by the constructor in the race."
+          - name: STATUS
+            description: "The status of the constructor in the race."
+
+      - name: CONSTRUCTOR_STANDINGS
+        description: "Standings for constructors across races, including points, position, and wins."
+        columns:
+          - name: CONSTRUCTORSTANDINGSID
+            description: "The unique identifier for each constructor standing."
+          - name: RACEID
+            description: "The unique identifier for the race."
+          - name: CONSTRUCTORID
+            description: "The unique identifier for the constructor."
+          - name: POINTS
+            description: "Total points for the constructor at this stage."
+          - name: WINS
+            description: "Number of wins by the constructor."
+
+      - name: DRIVERS
+        description: "Information about drivers, including their details and nationality."
+        columns:
+          - name: DRIVERID
+            description: "The unique identifier for each driver."
+          - name: DRIVERREF
+            description: "A unique reference string for the driver."
+          - name: FORENAME
+            description: "The first name of the driver."
+          - name: SURNAME
+            description: "The last name of the driver."
+          - name: URL
+            description: "The URL for more information about the driver."
+
+      - name: DRIVER_STANDINGS
+        description: "Standings for drivers across races, including points, position, and wins."
+        columns:
+          - name: DRIVERSTANDINGSID
+            description: "The unique identifier for each driver standing."
+          - name: RACEID
+            description: "The unique identifier for the race."
+          - name: DRIVERID
+            description: "The unique identifier for the driver."
+          - name: POINTS
+            description: "Total points for the driver at this stage."
+          - name: WINS
+            description: "Number of wins by the driver."
+
+      - name: LAP_TIMES
+        description: "Details of lap times recorded by drivers during races."
+        columns:
+          - name: RACEID
+            description: "The unique identifier for the race."
+          - name: DRIVERID
+            description: "The unique identifier for the driver."
+
+      - name: PIT_STOPS
+        description: "Details of pit stops made by drivers during races."
+        columns:
+          - name: RACEID
+            description: "The unique identifier for the race."
+          - name: DRIVERID
+            description: "The unique identifier for the driver."
+          - name: LAP
+            description: "The lap number when the pit stop occurred."
+          - name: TIME
+            description: "The time at which the pit stop occurred."
+          - name: STOP
+            description: "Details of the pit stop."
+
+      - name: QUALIFYING
+        description: "Details of qualifying sessions for races, including times for each stage."
+        columns:
+          - name: QUALIFYID
+            description: "The unique identifier for each qualifying session."
+          - name: RACEID
+            description: "The unique identifier for the race."
+          - name: DRIVERID
+            description: "The unique identifier for the driver."
+          - name: CONSTRUCTORID
+            description: "The unique identifier for the constructor."
+          - name: NUMBER
+            description: "The car number used during the qualifying session."
+
+      - name: RESULTS
+        description: "Race results for drivers, including points, position, and lap times."
+        columns:
+          - name: RESULTID
+            description: "The unique identifier for each race result."
+          - name: RACEID
+            description: "The unique identifier for the race."
+          - name: DRIVERID
+            description: "The unique identifier for the driver."
+          - name: CONSTRUCTORID
+            description: "The unique identifier for the constructor."
+          - name: STATUSID
+            description: "The identifier for the driver's race status."
+          - name: GRID
+            description: "The starting grid position of the driver."
+          - name: POSITIONTEXT
+            description: "Text representation of the final race position."
+          - name: POSITIONORDER
+            description: "Numerical representation of the final race position."
+          - name: POINTS
+            description: "The points scored by the driver in the race."
+          - name: LAPS
+            description: "The total number of laps completed."
+
+      - name: SEASONS
+        description: "Details of F1 seasons, including the year and associated URL."
+        columns:
+          - name: YEAR
+            description: "The year of the season."
+
+      - name: SPRINT_RESULTS
+        description: "Results for sprint races, including points, position, and lap times."
+        columns:
+          - name: SPRINTRESULTID
+            description: "The unique identifier for each sprint result."
+          - name: RACEID
+            description: "The unique identifier for the race."
+          - name: DRIVERID
+            description: "The unique identifier for the driver."
+          - name: CONSTRUCTORID
+            description: "The unique identifier for the constructor."
+          - name: STATUSID
+            description: "The identifier for the driver's sprint race status."
+          - name: GRID
+            description: "The starting grid position of the driver."
+          - name: POSITIONTEXT
+            description: "Text representation of the final sprint race position."
+          - name: POSITIONORDER
+            description: "Numerical representation of the final sprint race position."
+          - name: POINTS
+            description: "The points scored by the driver in the sprint race."
+          - name: LAPS
+            description: "The total number of laps completed in the sprint race."
+
+      - name: STATUS
+        description: "Details of race statuses, including unique identifiers and descriptions."
+        columns:
+          - name: STATUSID
+            description: "The unique identifier for each status."
+
+# API data 
+      - name: DRIVERS_API
+        description: "Api Tables for Drivers"
+        columns:
+          - name: MEETING_KEY
+            description: "Composite Key for Drivers table"
+          - name: SESSION_KEY
+            description: "Composite Key for Drivers table"
+      - name: PIT_API
+        description: "Api Tables for PIT"
+        columns:
+          - name: MEETING_KEY
+            description: "Composite Key for PIT table"
+          - name: SESSION_KEY
+            description: "Composite Key for PIT table"
+      - name: SESSIONS_API
+        description: "Api Tables for Sessions"
+        columns:
+          - name: MEETING_KEY
+            description: "Composite Key for Sessions table"
+          - name: SESSION_KEY
+            description: "Composite Key for Sessions table"
+      - name: WEATHER_API
+        description: "Api Tables for Weather"
+        columns:
+          - name: MEETING_KEY
+            description: "Composite Key for Weather table"
+          - name: SESSION_KEY
+            description: "Composite Key for Weather table"
+
+      - name: MEETINGS_API
+        description: "Details of racing events, including location, time, and circuit information."
+        columns:
+          - name: CIRCUIT_KEY
+            description: "Composite Key of the Meetings table. The unique identifier for the circuit where the event takes place."
+          - name: YEAR
+            description: "Composite Key of the Meetings table. The year the event takes place."            
+          - name: CIRCUIT_SHORT_NAME
+            description: "The short or common name of the circuit where the event takes place."
+          - name: COUNTRY_CODE
+            description: "A code that uniquely identifies the country."
+          - name: COUNTRY_KEY
+            description: "The unique identifier for the country where the event takes place."
+          - name: COUNTRY_NAME
+            description: "The full name of the country where the event takes place."
+          - name: DATE_START
+            description: "The UTC starting date and time, in ISO 8601 format."
+          - name: GMT_OFFSET
+            description: "The difference in hours and minutes between local time at the location of the event and Greenwich Mean Time (GMT)."
+          - name: LOCATION
+            description: "The city or geographical location where the event takes place."
+          - name: MEETING_KEY
+            description: "The unique identifier for the meeting. Use 'latest' to identify the latest or current meeting."
+          - name: MEETING_NAME
+            description: "The name of the meeting."
+          - name: MEETING_OFFICIAL_NAME
+            description: "The official name of the meeting."
+
+      - name: POSITION_API
+        description: "Details of driver positions in specific sessions, including meeting and session identifiers."
+        columns:
+          - name: DATE
+            description: "The Primary Key for Position table. The UTC date and time, in ISO 8601 format."
+          - name: MEETING_KEY
+            description: "The unique identifier for the meeting. Use 'latest' to identify the latest or current meeting."
+          - name: SESSION_KEY
+            description: "The unique identifier for the session. Use 'latest' to identify the latest or current session."
+          - name: DRIVER_NUMBER
+            description: "The unique number assigned to an F1 driver."
+          - name: POSITION
+            description: "Position of the driver (starts at 1)."
+
+      - name: RACE_CONTROL_API
+        description: "Details of race control events, including flags, categories, and session-specific information."
+        columns:
+          - name: LAP_NUMBER
+            description: "Composite Key for Race Control table. The sequential number of the lap within the session (starts at 1)."
+          - name: MEETING_KEY
+            description: "Composite Key for Race Control table. The unique identifier for the meeting. Use 'latest' to identify the latest or current meeting."
+          - name: SESSION_KEY
+            description: "Composite Key for Race Control table. The unique identifier for the session. Use 'latest' to identify the latest or current session."
+          - name: CATEGORY
+            description: "The category of the event (CarEvent, Drs, Flag, SafetyCar, etc.)."
+          - name: DATE
+            description: "The UTC date and time, in ISO 8601 format."
+          - name: DRIVER_NUMBER
+            description: "The unique number assigned to an F1 driver."
+          - name: FLAG
+            description: "Type of flag displayed (GREEN, YELLOW, DOUBLE YELLOW, CHEQUERED, etc.)."
+          - name: MESSAGE
+            description: "Description of the event or action."
+          - name: SCOPE
+            description: "The scope of the event (Track, Driver, Sector, etc.)."
+          - name: SECTOR
+            description: "Segment ('mini-sector') of the track where the event occurred (starts at 1)."
+
+      - name: STINTS_API
+        description: "Details of driver stints, including tyre usage, lap range, and session identifiers."
+        columns:
+          - name: MEETING_KEY
+            description: "Composite Key for Stints table. The unique identifier for the meeting. Use 'latest' to identify the latest or current meeting."
+          - name: SESSION_KEY
+            description: "Composite Key for Stints table. The unique identifier for the session. Use 'latest' to identify the latest or current session."
+          - name: STINT_NUMBER
+            description: "Composite Key for Stints table. The sequential number of the stint within the session (starts at 1)."
+          - name: DRIVER_NUMBER
+            description: "Composite Key for Stints table. The unique number assigned to an F1 driver."
+          - name: COMPOUND
+            description: "The specific compound of tyre used during the stint (SOFT, MEDIUM, HARD, etc.)."
+          - name: LAP_END
+            description: "Number of the last completed lap in this stint."
+          - name: LAP_START
+            description: "Number of the initial lap in this stint (starts at 1)."
+          - name: TYRE_AGE_AT_START
+            description: "The age of the tyres at the start of the stint, in laps completed."
