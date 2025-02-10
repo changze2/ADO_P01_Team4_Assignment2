@@ -1,0 +1,93 @@
+name: Snowflake CSV Upload & Load
+
+on:
+  push:
+    branches:
+      - main  # Trigger when pushing to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger on pull request to the main branch
+  schedule:
+    - cron: "0 1 * * *"  # Scheduled to run at 1 AM Singapore Time every day
+
+jobs:
+  upload-and-load:
+    runs-on: ubuntu-22.04  # Use Ubuntu-based runner
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 2: Install SnowSQL
+      - name: Download and install SnowSQL
+        run: |
+          curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.9-linux_x86_64.bash
+          SNOWSQL_DEST=~/snowflake SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.9-linux_x86_64.bash
+          echo "export PATH=\$PATH:~/snowflake/snowsql" >> ~/.profile
+          source ~/.profile
+
+      # Step 3: Test SnowSQL installation
+      - name: Test SnowSQL installation
+        run: |
+          source ~/.profile
+          ~/snowflake/snowsql -v
+
+      # Step 4: Set up Snowflake credentials
+      - name: Set up Snowflake credentials
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
+        run: |
+          echo "[connections.default]" > $HOME/.snowsql/config
+          echo "accountname = ${SNOWFLAKE_ACCOUNT}" >> $HOME/.snowsql/config
+          echo "username = ${SNOWFLAKE_USER}" >> $HOME/.snowsql/config
+          echo "password = ${SNOWFLAKE_PASSWORD}" >> $HOME/.snowsql/config
+          echo "dbname = ${SNOWFLAKE_DATABASE}" >> $HOME/.snowsql/config
+          echo "warehouse = ${SNOWFLAKE_WAREHOUSE}" >> $HOME/.snowsql/config
+          echo "schemaname = ${SNOWFLAKE_SCHEMA}" >> $HOME/.snowsql/config
+
+      # Step 5: Upload CSV files to Snowflake Stage (without .csv.gz suffix)
+      - name: Upload CSV files to Snowflake Stage
+        env:
+          SNOWFLAKE_STAGE: ${{ secrets.SNOWFLAKE_STAGE }}
+        run: |
+          echo "Uploading CSV files to Snowflake stage..."
+          # Check if CSV files exist and upload them
+          if [ -d "./csv_files" ] && ls ./csv_files/*.csv 1> /dev/null 2>&1; then
+            for file in ./csv_files/*.csv; do
+              echo "Uploading $file to Snowflake stage..."
+              # Remove the '.csv.gz' suffix if present, to upload as plain '.csv'
+              file_name=$(basename "$file")
+              ~/snowflake/snowsql -c default -q "PUT file://$file @${SNOWFLAKE_STAGE} AUTO_COMPRESS=FALSE"
+            done
+          else
+            echo "No CSV files found in the directory. Aborting upload."
+            exit 1
+          fi
+
+      # Step 6: Load CSV files into Snowflake tables
+      - name: Load CSV files into Snowflake tables
+        run: |
+          echo "Loading CSV files from Snowflake stage into tables..."
+          # Loop through the CSV files and load them into corresponding tables
+          for file in ./csv_files/*.csv; do
+            table_name=$(basename "$file" .csv)  # Table name is derived from the file name
+            # Use double quotes around the table name to prevent issues with special characters
+            echo "Loading $file into table \"$SNOWFLAKE_DATABASE\".\"$SNOWFLAKE_SCHEMA\".\"$table_name\""
+            ~/snowflake/snowsql -c default -q "COPY INTO \"$SNOWFLAKE_DATABASE\".\"$SNOWFLAKE_SCHEMA\".\"$table_name\" FROM @$SNOWFLAKE_STAGE/$(basename "$file") FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1)"
+          done
+
+      # Step 7: Verify loading status (optional)
+      - name: Verify loading status
+        run: |
+          echo "Verifying the load status..."
+          for file in circuits.csv pit_stops.csv seasons.csv constructor_results.csv constructors.csv races.csv qualifying.csv lap_times.csv constructor_standings.csv drivers.csv circuits.csv sprint_results.csv driver_standings.csv status.csv results.csv; do
+            table_name=$(basename "$file" .csv)
+            echo "Checking row count for table $table_name"
+            ~/snowflake/snowsql -c default -q "SELECT COUNT(*) FROM ${SNOWFLAKE_DATABASE}.${SNOWFLAKE_SCHEMA}.${table_name};"
+          done

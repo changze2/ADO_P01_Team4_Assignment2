@@ -1,0 +1,10 @@
+-- no transformation needed
+
+SELECT
+    DRIVERSTANDINGSID as DRIVER_STANDINGS_ID,
+    RACEID as RACE_ID,
+    DRIVERID as DRIVER_ID,
+    POINTS,
+    POSITION,
+    WINS
+FROM {{ ref('STG_DRIVER_STANDINGS') }}
