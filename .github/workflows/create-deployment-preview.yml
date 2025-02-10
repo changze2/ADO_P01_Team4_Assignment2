@@ -36,7 +36,7 @@ jobs:
           git config --local user.name "GitHub Actions Bot"
           git add dags/
           git commit -m "Updated DAGs with latest DBT code"
-          git push origin main-testing
+          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/changze2/ADO_P01_Team4_Assignment2.git main-testing
 
       - name: Create Preview Deployment
         uses: astronomer/deploy-action@v0.3
