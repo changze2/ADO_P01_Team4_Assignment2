@@ -1,12 +1,12 @@
-name: Astronomer CI - Create preview Deployment
+name: Astronomer CI - Create Preview Deployment
 
 on:
   push:
     branches:
-      - main-airflow
+      - main-testing
   pull_request:
     branches:
-      - main-airflow 
+      - main-testing
 
 env:
   ## Set your Workspace API key token as a GitHub secret
@@ -16,8 +16,29 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Create preview Deployment
-      uses: astronomer/deploy-action@v0.3
-      with:
-        action: create-deployment-preview
-        deployment-id: cm6xr6ctf0lvv01jpebn5z9fj #--
+      - name: Checkout Airflow branch
+        uses: actions/checkout@v3
+        with:
+          ref: main-testing
+
+      - name: Pull Latest DBT Code
+        run: |
+          git fetch origin main-dbt
+          git checkout main-dbt
+          rsync -av --progress . ../dbt_temp --exclude .git
+          git checkout main-testing
+          rsync -av --progress ../dbt_temp/ ./dags/
+          rm -rf ../dbt_temp
+
+      - name: Commit & Push Changes to Airflow
+        run: |
+          git add dags/
+          git commit -m "Updated DAGs with latest DBT code"
+          git push origin main-testing
+
+      - name: Create Preview Deployment
+        uses: astronomer/deploy-action@v0.3
+        with:
+          action: create-deployment-preview
+          deployment-id: cm6xr6ctf0lvv01jpebn5z9fj  #--
+
