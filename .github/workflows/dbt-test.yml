@@ -3,10 +3,10 @@ name: dbt Testing and Deployment
 on:
   push:
     branches:
-      - main-dbt  # Trigger the workflow on push to the main branch
+      - main-dbt-testing  # Trigger the workflow on push to the main branch
   pull_request:
     branches:
-      - main-dbt  # Trigger the workflow on pull requests to the main branch
+      - main-dbt-testing  # Trigger the workflow on pull requests to the main branch
 
 jobs:
   validate-dbt:
@@ -69,6 +69,13 @@ jobs:
           dbt debug --target prod
           dbt test --target prod
           dbt run --target prod
+      - name: Commit & Push Changes to main-airflow
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Actions Bot"
+          git add dags/
+          git commit -m "Sync latest DBT changes from main-dbt to main-airflow" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/changze2/ADO_P01_Team4_Assignment2.git main-testing
 
       # Step 7: Notify on Success
       - name: Notify on Success
