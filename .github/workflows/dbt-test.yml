@@ -9,6 +9,7 @@ on:
       - main-dbt-testing  # Trigger the workflow on pull requests to the main branch
 
 jobs:
+
   validate-dbt:
     runs-on: ubuntu-latest
 
@@ -22,13 +23,31 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
-      - name: Commit & Push Changes to main-airflow
+      # Step 7: Checkout main-airflow branch
+      - name: Checkout main-airflow
         run: |
+          git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com/changze2/ADO_P01_Team4_Assignment2.git --branch main-testing airflow_repo
+
+      # Step 8: Copy the `dbt_testing/` project to the Airflow DAGs folder
+      - name: Copy DBT Project to Airflow DAGs
+        run: |
+          mkdir -p airflow_repo/dags/dbt_testing  # Ensure the target folder exists
+          rsync -av --progress dbt_testing/ airflow_repo/dags/dbt_testing/  # Copy only DBT project
+
+      # Step 9: Commit & Push Changes to main-airflow
+      - name: Commit & Push Changes to main-testing
+        run: |
+          cd airflow_repo
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "GitHub Actions Bot"
-          git add dags/
-          git commit -m "Sync latest DBT changes from main-dbt to main-airflow" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/changze2/ADO_P01_Team4_Assignment2.git main-testing
+          git add dags/dbt_testing/
+          git commit -m "Updated dbt_testing project from main-dbt-testing" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/changze2/ADO_P01_Team4_Assignment2.git main-testing
+
+      # Step 10: Notify on Success
+      - name: Notify on Success
+        if: success()
+        run: echo "✅ DBT Model Testing and Deployment executed successfully for branch ${{ github.ref_name }}"
       # Step 3: Install dbt and dependencies
       - name: Install dbt and Dependencies
         run: |
